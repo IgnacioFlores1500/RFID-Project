@@ -14,6 +14,7 @@ pointer.execute('''	CREATE TABLE students
 			(KeyID INTEGER, FirstName TEXT, LastName TEXT, ASUID INTEGER, CampusOFFCampus TEXT)
 ''')
 
+#HardCode a inputStatment
 pointer.execute("INSERT INTO students VALUES(1, 'Iggy', 'Flores', 10000000, 'Campus' )")
 
 
