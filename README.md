@@ -6,4 +6,6 @@ Team: Brayden Payne, Ignacio Flores, JohnPaul Flores,
 
 # Note for Projet Members
 I removed our logs atm to not reveal any personal info or weird interaction : ).
-Just find that google doc we used before. If we need a link, @JohnPaul. - Ignacio Flores 9-21-2021
+
+
+If you need to find that google doc we used before.  @JohnPaul. - Ignacio Flores 9-21-2021
