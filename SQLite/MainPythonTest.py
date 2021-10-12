@@ -5,4 +5,10 @@ import sqlite3
 
 from testSQLIte import mainSqlTestCode
 
-mainSqlTestCode()
+
+def main():
+    mainSqlTestCode()
+
+
+if __name__ == "__main__":
+    main()
