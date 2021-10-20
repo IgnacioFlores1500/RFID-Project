@@ -1,14 +1,20 @@
 #Main Python File
 
-import testSQLIte
-import sqlite3
 
-from testSQLIte import mainSqlTestCode
+from testSQLIte import *
+from Class import *
+import sqlite3
+from  tkinter import *
+
+
 
 
 def main():
-    mainSqlTestCode()
+    #Iggy = student(1, 'Ignacio', 'Flores', 100000, 'Campus')
+    #createSqlTable()
+    #inputNewRecord(Iggy)
+    readEntireDataBase()
 
-
+    
 if __name__ == "__main__":
     main()
