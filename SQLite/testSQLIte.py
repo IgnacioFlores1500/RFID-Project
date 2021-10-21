@@ -2,9 +2,12 @@ import sqlite3
 import Class
 from Class import student
 
-def createSqlTable():
+
+#Creates student.db table
+def createSqlStudentTable():
 	#---------------------------------------------------------
 	con = sqlite3.connect("People_Class.db")
+	#con = sqlite3.connect("students.db")
 	#--------------------------------------------------------
 
 	#Cursor for the Database
@@ -22,13 +25,25 @@ def createSqlTable():
 	except:
 		print("Error")
 
-	#HardCode a inputStatment
-	#pointer.execute("INSERT INTO students VALUES(1, 'Iggy', 'Flores', 10000000, 'Campus' )")
+	
+	#Commit any changes into the Database.
+	con.commit() 
+	#Close our connection to the Database.
+	con.close()
 
-	#Test input
-	#pointer.execute("INSERT INTO students VALUES(?, ?, ?, ?,?)", (2, 'JP', 'Flores', 10000001, 'Off-Campus'))
 
-	#print(pointer.fetchall())
+#Using the studentObject [See Class.py for constructor], input the object into the database
+def inputNewRecord(studentObject):
+	#---------------------------------------------------------
+	con = sqlite3.connect("People_Class.db")
+	#--------------------------------------------------------
+	#Cursor for the Database
+	pointer = con.cursor()
+
+	#Insert studentObj into the database.
+	pointer.execute("INSERT INTO students VALUES(?, ?, ?, ?,?)", (studentObject.key, studentObject.firstName, studentObject.lastName,studentObject.ASUID, studentObject.CampusOFFCampus))
+
+	#Looks at table and prints that row
 	#for x in pointer.execute("SELECT * FROM students"):
 	#	print(x)
 
@@ -37,25 +52,19 @@ def createSqlTable():
 	#Close our connection to the Database.
 	con.close()
 
-
-
-def inputNewRecord(studentObject):
-	#---------------------------------------------------------
+def removeRecordFromID(KeyID):
 	con = sqlite3.connect("People_Class.db")
-	#--------------------------------------------------------
-	#Cursor for the Database
 	pointer = con.cursor()
 
-	pointer.execute("INSERT INTO students VALUES(?, ?, ?, ?,?)", (studentObject.key, studentObject.firstName, studentObject.lastName,studentObject.ASUID, studentObject.CampusOFFCampus))
+	pointer.execute("DELETE FROM students WHERE KeyID=(?)", (KeyID,))
 
-	for x in pointer.execute("SELECT * FROM students"):
-		print(x)
-
-	#Commit any changes into the Database.
-	con.commit() 
-	#Close our connection to the Database.
+	con.commit()
 	con.close()
+	#Remove readEntireDateBase Function later for production
+	readEntireDataBase()
 
+
+# Read the Entire function in the database
 def readEntireDataBase():
 	con = sqlite3.connect("People_Class.db")
 	pointer = con.cursor()
@@ -65,3 +74,15 @@ def readEntireDataBase():
 
 	con.commit()
 	con.close()
+
+#Read the infomation from a given KeyID
+def readIDFromDataBase(KeyID):
+	con = sqlite3.connect("People_Class.db")
+	pointer = con.cursor()
+
+	for x in pointer.execute("SELECT * FROM students WHERE KeyID=(?)", (KeyID,)):
+		print(x)
+
+	con.commit()
+	con.close()
+
