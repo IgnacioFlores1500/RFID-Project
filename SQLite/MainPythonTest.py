@@ -11,12 +11,15 @@ from  tkinter import *
 
 def main():
     #Iggy = student(1, 'Ignacio', 'Flores', 100000, 'Campus')
-    #createSqlTable()
+    #createSqlStudentTable()
     #inputNewRecord(Iggy)
-    #readEntireDataBase()
+    readEntireDataBase()
+    #TESTINPUT()
     #readIDFromDataBase(1)
     #removeRecordFromID(1)
     #removeRecordFromID(2)
     
+
+
 if __name__ == "__main__":
     main()

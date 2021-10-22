@@ -1,6 +1,7 @@
 
 class student:
     #Note to self, we need to write a key function to write new keys
+    #FIXED: Look at Commit 10/22/2021
     def __init__(self, key, firstName,lastName, ASUID, CampusOFFCampus):
         self.key = key
         self.firstName = firstName
