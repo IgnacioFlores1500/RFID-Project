@@ -9,10 +9,8 @@ def createSqlStudentTable():
 	con = sqlite3.connect("students.db")
 	#con = sqlite3.connect("students.db")
 	#--------------------------------------------------------
-
 	#Cursor for the Database
 	pointer = con.cursor()
-
 	#Creating a table
 	try:
 		pointer.execute('''	CREATE TABLE students
@@ -50,7 +48,7 @@ def inputNewRecord(studentObject):
 	pointer = con.cursor()
 
 	#Insert studentObj into the database.
-	pointer.execute("INSERT INTO students VALUES(?, ?, ?, ?,?)", (studentObject.key, studentObject.firstName, studentObject.lastName,studentObject.ASUID, studentObject.CampusOFFCampus))
+	pointer.execute("INSERT INTO students VALUES(NULL, ?, ?, ?,?)", ( studentObject.firstName, studentObject.lastName,studentObject.ASUID, studentObject.CampusOFFCampus))
 
 	#Looks at table and prints that row
 	#for x in pointer.execute("SELECT * FROM students"):
@@ -95,3 +93,16 @@ def readIDFromDataBase(KeyID):
 	con.commit()
 	con.close()
 
+def getRecordViaFirstNameFromDataBase(Name):
+	con = sqlite3.connect("students.db")
+	pointer = con.cursor()
+
+	splitName = Name.split('.')
+	firstname = splitName[0]
+	lastName = splitName[1]
+
+	for x in pointer.execute("SELECT * FROM students WHERE FirstName=(?)", (firstname,)):
+		print(x)
+	
+	con.commit()
+	con.close()
