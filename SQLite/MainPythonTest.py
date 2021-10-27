@@ -10,6 +10,7 @@ from  tkinter import *
 
 
 def main():
+    print("Hello :)")
     # Iggy = student('Ignacio', 'Flores', 100_000, 'Campus')
     # JP = student("JohnPaul", 'Flores', 100_001, 'OffCampus')
     # createSqlStudentTable()
