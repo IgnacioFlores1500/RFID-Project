@@ -13,6 +13,7 @@ def createTables():
     LastName TEXT NOT NULL,
     Suffix TEXT,
     ASUID INTEGER NOT NULL,
+    RFID INTEGER NOT NULL,
     Email TEXT NOT NULL,
     PHONE INTERGER NOT NULL,
     CampusOFFCampus TEXT NOT NULL)
@@ -36,7 +37,8 @@ def createTables():
     (Course_ID INTEGER PRIMARY KEY,
     Course_Name TEXT NOT NULL,
     Building_Name TEXT NOT NULL,
-    Room_Number INTEGER NOT NULL) 
+    Room_Number INTEGER NOT NULL,
+    Seats_In_Class INTEGER NOT NULL) 
         ''')
         # Commit any changes into the Database.
    con.commit() 
