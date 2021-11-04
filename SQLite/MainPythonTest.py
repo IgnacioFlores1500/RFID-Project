@@ -4,8 +4,9 @@
 from testSQLIte import *
 from Class import *
 import sqlite3
-from  tkinter import *
-
+import sys
+from tkinter import *
+from ..RFIDUI.scannerUI import importedTestMain
 
 
 

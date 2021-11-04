@@ -22,6 +22,12 @@ def main():
     #starting event loop
     program.window.mainloop()
 
+def importedTestMain():
+    #creating program
+    program = RFIDDisplay()
+    #starting event loop
+    program.window.mainloop()
+
 class RFIDDisplay:
 
     def __init__(self):
