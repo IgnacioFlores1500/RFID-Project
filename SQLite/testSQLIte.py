@@ -39,6 +39,23 @@ def createSqlStudentTable():
 # 	con.close()
 
 
+def createAnotherTable():
+	con = sqlite3.connect("students.db")
+	pointer = con.cursor()
+	pointer.execute('''	CREATE TABLE professors
+				(KeyID INTEGER PRIMARY KEY,
+				FirstName TEXT,
+				LastName TEXT,
+				ASUID INTEGER,
+				CampusOFFCampus TEXT)
+		''')
+	#Commit any changes into the Database.
+	con.commit() 
+	#Close our connection to the Database.
+	con.close()
+
+
+
 #Using the studentObject [See Class.py for constructor], input the object into the database
 def inputNewRecord(studentObject):
 	#---------------------------------------------------------

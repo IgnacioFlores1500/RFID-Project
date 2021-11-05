@@ -5,6 +5,7 @@ import Class
 def createTables():
    con = sqlite3.connect("Database.db")
    #Cursor for the Database
+   #con.execute("PRAGMA foreign_keys = 1")
    pointer = con.cursor()
    #Creates Person Table
    try:
@@ -20,18 +21,20 @@ def createTables():
             CampusOFFCampus TEXT NOT NULL)
                 ''')
 
-            #Creates Professor Table
-      pointer.execute(''' CREATE TABLE professors
-            (ProfID INTEGER REFERENCES people(KeyID), 
-            EditPrivages INTEGER NOT NULL,
-            Course_ID INTEGER REFERENCES courses(Course_ID))
-                ''')
+        #Creates Professor Table
+      pointer.execute('''CREATE TABLE professors
+        (ProfID INTEGER PRIMARY KEY,
+        ContactID INTEGER NOT NULL,
+        EditPrivages INTEGER NOT NULL,
+        FOREIGN KEY (ContactID) REFERENCES people (KeyID))
+        ''')
 
             #Creates Students Table
       pointer.execute(''' CREATE TABLE students
-            (StudentID INTEGER REFERENCES people(KeyID),
+            (StudentID INTEGER PRIMARY KEY,
+            ContactID INTEGER NOT NULL,
             COVID_Status TEXT NOT NULL,
-            Course_ID INTEGER NOT NULL)
+            FOREIGN Key (ContactID) REFERENCES people (KeyID))
                 ''')
             #Creates Courses Table  
       pointer.execute(''' CREATE TABLE courses
@@ -48,12 +51,31 @@ def createTables():
             Had_Covid TEXT NOT NULL,
             Date INTEGER NOT NULL)
                 ''')
+
+        #CREATE ENROLLED TABLE
    except:
-        pass
+        print("ERROR")
         # Commit any changes into the Database.
    con.commit() 
         #Close our connection to the Database.
    con.close()
+
+# def createProfessorTable():
+#     con = sqlite3.connect("Database.db")
+#     #Cursor for the Database
+#     #con.execute("PRAGMA foreign_keys = 1")
+#     pointer = con.cursor()
+#     #Creates Person Table
+
+#     pointer.execute('''CREATE TABLE professors
+#         (ProfID INTEGER PRIMARY KEY,
+#         ContactID INTEGER NOT NULL,
+#         EditPrivages INTEGER NOT NULL,
+#         FOREIGN KEY (ContactID) REFERENCES people (KeyID))
+#         ''')
+#         #Course_ID INTEGER REFERENCES courses(Course_ID)),
+#     con.commit()
+#     con.close()
 
 
 def inputBasicInfoPeople(person):
@@ -77,12 +99,26 @@ def deleteBasicInfoPeople(IDNumber):
     con.commit()
     con.close()
 
-def readPeopleTable(tableName):
+def readPeopleTable():
     con = sqlite3.connect ("Database.db")
     pointer = con.cursor()
     testTableName = "people"
     
     for x in pointer.execute("SELECT * FROM people"):
+        print(x)
+
+    #for x in pointer.execute("SELECT * FROM (?)", ("people")):
+	#    print(x)
+
+    con.commit()
+    con.close()
+
+def readProfTable():
+    con = sqlite3.connect ("Database.db")
+    pointer = con.cursor()
+    #testTableName = "people"
+    
+    for x in pointer.execute("SELECT * FROM professors"):
         print(x)
 
     #for x in pointer.execute("SELECT * FROM (?)", ("people")):
