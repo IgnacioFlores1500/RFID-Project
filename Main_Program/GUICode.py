@@ -16,6 +16,9 @@ from tkinter import messagebox
 from tkinter import simpledialog
 # sublibrary to 
 
+#Imports a function to give you the list from a RFID Tag
+from dataBaseCode import returnsKeyIDPeopleTableFromRFIDTag
+
 TrueUser = False
 TruePassword = False
 CurrentFailedAttempt = False
@@ -51,6 +54,10 @@ class RFIDDisplay:
             if users == enteredName:
                 return True
         return False
+
+
+
+
 
     #validPassword takes what the user entered into the passwd box and sees if the password 
     #and username match the ones in the data base

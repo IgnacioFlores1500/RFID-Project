@@ -16,7 +16,8 @@ class people:
         self.Phone = Phone
         self.CampusOFFCampus = CampusOFFCampus
     
-  
+
+       
     
 
 

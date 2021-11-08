@@ -1,11 +1,11 @@
 import sqlite3
 import Class
-
+import sys
 
 def createTables():
    con = sqlite3.connect("Database.db")
    #Cursor for the Database
-   #con.execute("PRAGMA foreign_keys = 1")
+   con.execute("PRAGMA foreign_keys = ON")
    pointer = con.cursor()
    #Creates Person Table
    try:
@@ -26,7 +26,7 @@ def createTables():
         (ProfID INTEGER PRIMARY KEY,
         ContactID INTEGER NOT NULL,
         EditPrivages INTEGER NOT NULL,
-        FOREIGN KEY (ContactID) REFERENCES people (KeyID))
+        FOREIGN KEY(ContactID) REFERENCES people(KeyID))
         ''')
 
             #Creates Students Table
@@ -34,7 +34,8 @@ def createTables():
             (StudentID INTEGER PRIMARY KEY,
             ContactID INTEGER NOT NULL,
             COVID_Status TEXT NOT NULL,
-            FOREIGN Key (ContactID) REFERENCES people (KeyID))
+            FOREIGN Key (ContactID) REFERENCES people (KeyID),
+            FOREIGN Key (COVID_Status) REFERENCES Covid_Info (COVID_Status))
                 ''')
             #Creates Courses Table  
       pointer.execute(''' CREATE TABLE courses
@@ -45,7 +46,7 @@ def createTables():
             Seats_In_Class INTEGER NOT NULL) 
                 ''')
             #Creates Covid Table
-      pointer.execute(''' CREATE TABLE covid_status
+      pointer.execute(''' CREATE TABLE Covid_Info
             (Student_ID INTEGER REFERENCES people(KeyID),
             Has_Covid TEXT NOT NULL,
             Had_Covid TEXT NOT NULL,
@@ -80,6 +81,7 @@ def createTables():
 
 def inputBasicInfoPeople(person):
     con = sqlite3.connect("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
     #Cursor for the Database
     pointer = con.cursor()
     #testInputName = people("Iggy", "Flowers", "None","999_999", "AB:CD:EF:GH", "111_111", "On_Campu")
@@ -88,8 +90,48 @@ def inputBasicInfoPeople(person):
     con.commit()
     con.close()
 
+def inputProfessor():
+    con = sqlite3.connect("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
+    #Cursor for the Database
+    pointer = con.cursor()
+    
+    #TableLayOut:
+    #ProfID PK
+    #ContactID FK
+    #EditPrivages INT 
+    temp_ContactID = None
+    temp_Edit_Priv = None
+    temp2_Edit_Priv = None
+
+    ##Fix this shit code later - 11-6-2021
+    while (temp_Edit_Priv == None):
+        readPeopleTable()
+        temp_ContactID = input("Insert People ID ")
+        temp_Edit_Priv = input("Do you want this Professor to have edit powers? (Yes or No) ")
+        
+    #1 = admin, 0 = normal
+    if (temp_Edit_Priv == 'Yes'):
+        temp2_Edit_Priv = 1
+    elif (temp_Edit_Priv == "No"):
+        temp2_Edit_Priv = 0
+    else:
+        print("ERROR")
+
+
+    try: 
+        pointer.execute("INSERT INTO professors VALUES(NULL,?,?)", (temp_ContactID,temp2_Edit_Priv))
+    except sqlite3.IntegrityError:
+        print("Contact_ID Doesn't exist")
+
+    print("INPUTED")
+    con.commit()
+    con.close()
+
+
 def deleteBasicInfoPeople(IDNumber):
     con = sqlite3.connect("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
     #Cursor for the Database
     pointer = con.cursor()
     
@@ -99,8 +141,21 @@ def deleteBasicInfoPeople(IDNumber):
     con.commit()
     con.close()
 
+def deleteProfessor(IDNumber):
+    con = sqlite3.connect("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
+    #Cursor for the Database
+    pointer = con.cursor()
+    
+    pointer.execute("DELETE FROM professors WHERE ProfID=(?)", (IDNumber,))
+
+    print("DELETE$D")
+    con.commit()
+    con.close()
+
 def readPeopleTable():
     con = sqlite3.connect ("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
     pointer = con.cursor()
     testTableName = "people"
     
@@ -113,8 +168,39 @@ def readPeopleTable():
     con.commit()
     con.close()
 
+
+def returnsKeyIDPeopleTableFromRFIDTag(RFID):
+    con = sqlite3.connect ("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
+    pointer = con.cursor()
+    
+    #for x in pointer.execute("SELECT KeyID FROM people WHERE RFID=(?)", (RFID,)):
+     #   print(x)
+
+    pointer.execute("SELECT KeyID FROM people WHERE RFID=(?)", (RFID,))
+    return(pointer.fetchone())
+
+    #for x in pointer.execute("SELECT * FROM (?)", ("people")):
+	#    print(x)
+
+    con.commit()
+    con.close() 
+
+def readPeopleTable():
+    con = sqlite3.connect ("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
+    pointer = con.cursor()
+
+    for x in pointer.execute("SELECT * FROM people"):
+        print(x)
+    
+    con.commit()
+    con.close()
+
+
 def readProfTable():
     con = sqlite3.connect ("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
     pointer = con.cursor()
     #testTableName = "people"
     
