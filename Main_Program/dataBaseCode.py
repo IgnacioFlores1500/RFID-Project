@@ -158,10 +158,11 @@ def readPeopleTable():
     con.execute("PRAGMA foreign_keys = ON")
     pointer = con.cursor()
     testTableName = "people"
-    
+    print("people table")
+    print("------------------------------------")
     for x in pointer.execute("SELECT * FROM people"):
         print(x)
-
+    print("------------------------------------")
     #for x in pointer.execute("SELECT * FROM (?)", ("people")):
 	#    print(x)
 
@@ -186,17 +187,17 @@ def returnsKeyIDPeopleTableFromRFIDTag(RFID):
     con.commit()
     con.close() 
 
-def readPeopleTable():
+def returnsAdminStatusViaPersonID(peopleID):
+    
     con = sqlite3.connect ("Database.db")
     con.execute("PRAGMA foreign_keys = ON")
     pointer = con.cursor()
 
-    for x in pointer.execute("SELECT * FROM people"):
-        print(x)
+    pointer.execute("SELECT EditPrivages FROM professors WHERE ContactID=(?)", (peopleID,))
+    return(pointer.fetchone())
     
     con.commit()
     con.close()
-
 
 def readProfTable():
     con = sqlite3.connect ("Database.db")
@@ -204,11 +205,14 @@ def readProfTable():
     pointer = con.cursor()
     #testTableName = "people"
     
+    print("prof table")
+    print("------------------------------------")
     for x in pointer.execute("SELECT * FROM professors"):
         print(x)
-
+    print("------------------------------------")
     #for x in pointer.execute("SELECT * FROM (?)", ("people")):
 	#    print(x)
 
     con.commit()
     con.close()
+

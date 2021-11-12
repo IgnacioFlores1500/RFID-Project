@@ -16,8 +16,8 @@ from tkinter import messagebox
 from tkinter import simpledialog
 # sublibrary to 
 
-#Imports a function to give you the list from a RFID Tag
-from dataBaseCode import returnsKeyIDPeopleTableFromRFIDTag
+#Imports a function from database file to return if a personID has edit_prilvages
+from dataBaseCode import returnsAdminStatusViaPersonID
 
 TrueUser = False
 TruePassword = False
@@ -45,15 +45,32 @@ class RFIDDisplay:
     #isAdmin sends what the user input for logging in. This will be the log in page for the UI and
     #if the username and password are correct then it will provide access to the classroom state and 
     #modifying priveliges to the classroom as well
-    def isAdmin(self, event, accounts):
+    def isAdminFromPersonID(self, personID):
+        #def isAdmin(self, event, accounts):
         #taking data entered into the entry and chcecking it for authentification
-        enteredName = self.my_entry.get()
+        #enteredName = self.my_entry.get()
         
+
+        ##Calls returnsFunction from databaseCode
+        Status = returnsAdminStatusViaPersonID(personID)
+
+        ##Test that Status
+        if (Status == 1):
+            print("TRUETEST")
+            return True
+        else:
+            print("FALSETEST")
+            return False
+
+
+
         #if whatever information is true then 
-        for users in accounts:
-            if users == enteredName:
-                return True
-        return False
+        #for users in accounts:
+         #   if users == enteredName:
+          #      return True
+        #return False
+
+
 
 
 
