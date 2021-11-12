@@ -187,6 +187,25 @@ def returnsKeyIDPeopleTableFromRFIDTag(RFID):
     con.commit()
     con.close() 
 
+
+def returnsInfomationFromPeopleTableFromFirstName(firstName):
+    con = sqlite3.connect ("Database.db")
+    con.execute("PRAGMA foreign_keys = ON")
+    pointer = con.cursor()
+    
+    #for x in pointer.execute("SELECT KeyID FROM people WHERE RFID=(?)", (RFID,)):
+     #   print(x)
+    #print(firstName)
+
+    ## And this is the named style:
+    ##cur.execute("select * from lang where first_appeared=:year", {"year": 1972})
+    ##print(cur.fetchall())
+
+    pointer.execute("SELECT * FROM people WHERE FirstName = (?)", (firstName,))
+    return(pointer.fetchone())  
+    con.commit()
+    con.close()   
+
 def returnsAdminStatusViaPersonID(peopleID):
     
     con = sqlite3.connect ("Database.db")

@@ -9,6 +9,7 @@ from dataBaseCode import readProfTable
 from dataBaseCode import returnsKeyIDPeopleTableFromRFIDTag
 from dataBaseCode import inputProfessor
 from dataBaseCode import deleteProfessor
+from dataBaseCode import returnsInfomationFromPeopleTableFromFirstName
 #from dataBaseCode import createProfessorTable
 from GUICode import RFIDDisplay
 #isAdminFromPersonID
@@ -16,7 +17,7 @@ from GUICode import RFIDDisplay
 
 def testCode():
 
-    createTables()
+    #createTables()
     #createProfessorTable()
     #print("hello")
     #testInputName1 = people("Iggy", "Flowers", "None",999_999, "AB:CD:EF:GH","potato@gmail.com", 111_101_1111, "On_Campus")
@@ -34,16 +35,23 @@ def testCode():
     #inputProfessor()
     readPeopleTable()
     #print("-----------------")
-    readProfTable()
+    #readProfTable()
     #deleteBasicInfoPeople(2)
     #readTable("people")
 
-    RFIDDisplay.isAdminFromPersonID(1)
+    # firstName = "Bob"
+    # x = returnsInfomationFromPeopleTableFromFirstName(firstName)
+    
+    # if (x):
+    #     print ("YIKES")
+    # else: 
+    #     print("FALSE")
+    #RFIDDisplay.isAdminFromPersonID(1)
 
     #creating program
-    #program = RFIDDisplay()
+    program = RFIDDisplay()
     #starting event loop
-    #pogram.window.mainloop()
+    program.window.mainloop()
 
 def main():
     ## testCode is just the temp function to test datavbase or GUI code
