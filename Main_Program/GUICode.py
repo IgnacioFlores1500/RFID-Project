@@ -18,8 +18,8 @@ from tkinter.constants import END
 # sublibrary to 
 
 ##Imports a function from database file to return if a personID has edit_prilvages
-from dataBaseCode import returnsAdminStatusViaPersonID
-from dataBaseCode import returnsInfomationFromPeopleTableFromFirstName
+from dataBaseCode import returnFromDataBase
+#from dataBaseCode import returnsInfomationFromPeopleTableFromFirstName
 
 TrueUser = False
 TruePassword = False
@@ -56,7 +56,7 @@ class RFIDDisplay:
         enteredName = self.my_entry.get()
         print(enteredName)
         ##Grabs tuple of people data based from the user 
-        resultingInfo = returnsInfomationFromPeopleTableFromFirstName(firstName)
+        resultingInfo = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(firstName)
 
         ## 
         if resultingInfo:
@@ -68,7 +68,7 @@ class RFIDDisplay:
 
         ##Using the KeyID from the people table, we look returnsAdmin...Function 
         ##that looks at the EditPrivages
-        Status = returnsAdminStatusViaPersonID(grabbedPersonID) ##This should be either a 1 or 0
+        Status = returnFromDataBase.returnsAdminStatusViaPersonID(grabbedPersonID) ##This should be either a 1 or 0
 
         ##Test that Status
         if (Status == 1):
@@ -123,7 +123,7 @@ class RFIDDisplay:
 
         firstNameDBFinal = ()
         ##This returns a tuple of the people table from the firstName you put in user = self.name_entry.get()
-        firstNameFromDatasBase = returnsInfomationFromPeopleTableFromFirstName(user)
+        firstNameFromDatasBase = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(user)
         ##lastNameFromDataBase =
 
         ##If the tuple does exist, (aka there is someone called whatever the user puts)
