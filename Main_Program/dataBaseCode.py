@@ -45,17 +45,39 @@ def createTables():
             Course_Name TEXT NOT NULL,
             Building_Name TEXT NOT NULL,
             Room_Number INTEGER NOT NULL,
-            Seats_In_Class INTEGER NOT NULL) 
+            roomClassSize INTEGER NOT NULL,
+            professorID INTEGER NOT NULL,
+            startDate INTEGER NOT NULL,
+            endDate INTEGER NOT NULL,
+            time INTERGER NOT NULL,
+            FOREIGN Key (professorID) REFERENCES professor (ProfID)) 
                 ''')
             #Creates Covid Table
-      pointer.execute(''' CREATE TABLE Covid_Info
+      pointer.execute(''' CREATE TABLE CovidDetails
             (Student_ID INTEGER REFERENCES people(KeyID),
-            Has_Covid TEXT NOT NULL,
-            Had_Covid TEXT NOT NULL,
+            HasCovid INTEGER NOT NULL,
+            HadCovid INTEGER NOT NULL,
             Date INTEGER NOT NULL)
                 ''')
 
-        #CREATE ENROLLED TABLE
+            #Creates activeClasses table, this tables should save all the classes that admin makes
+      pointer.execute(''' CREATE TABLE activeClass
+            (activeStudents INTEGER PRIMARY KEY,
+            studentID INTEGER NOT NULL,
+            courseID INTEGER NOT NULL,
+            seatNumber INTEGER NOT NULL,
+            FOREIGN KEY (studentID) REFERENCES students (StudentID),
+            FOREIGN KEY (courseID) REFERENCES courses (Course_ID))
+       ''')
+            #Creates Attendence
+      pointer.execute(''' CREATE TABLE IF NOT EXIST attendence
+            (date TEXT PRIMARY KEY,
+            courseID INTEGER NOT NULL,
+            studentID INTEGER NOT NULL,
+            attendence INTEGER NOT NULL,
+            FOREIGN KEY (courseID) REFERENCES students (StudentID),
+            FOREIGN KEY (courseID REFERENCES courses (COURSE_ID))
+       ''')
    except:
         print("Tables already made")
         # Commit any changes into the Database.
