@@ -19,7 +19,13 @@ from tkinter.constants import END
 
 ##Imports a function from database file to return if a personID has edit_prilvages
 from dataBaseCode import returnFromDataBase
-#from dataBaseCode import returnsInfomationFromPeopleTableFromFirstName
+## imports the people class from Class.py to import data
+from Class import people
+##Imprts a functions that allows to import users into database
+from dataBaseCode import inputDataBase
+##Imports readFunctions that allows to use read the database using functions
+from dataBaseCode import readFromDataBase
+
 
 TrueUser = False
 TruePassword = False
@@ -187,13 +193,18 @@ class RFIDDisplay:
         self.tagEntry.insert(tk.END, """Enter a "new Students" RFID tag""")
         self.tagEntry.bind("<Return>", self.addToDatabase)
 
+        self.phoneEntry = ttk.Entry(self.window, width=50)
+        self.phoneEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.phoneEntry.insert(tk.END, """Enter a "new Students" phoneNumber""")
+        self.phoneEntry.bind("<Return>", self.addToDatabase)
+
         self.emailEntry = ttk.Entry(self.window, width=50)
-        self.emailEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.emailEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
         self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
         self.emailEntry.bind("<Return>", self.addToDatabase)
     
         self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
         self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
         self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
         
@@ -201,7 +212,7 @@ class RFIDDisplay:
         ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
         #fixed button, moved button to admin powers. figured it would make it appear and disappear correctly
         self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
-        self.insert_Record_Button.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
         self.create_widgets()
 
@@ -236,8 +247,58 @@ class RFIDDisplay:
 
     #this function is connected to the update database button specifically for 
     #the time being
-    def addToDatabase(self):
-        hello = 0
+    def addToDatabase(self, event):
+
+
+        ##Goodate is a value to check if the data in the entry is correct.
+        ## If not, the user will not be able to input data
+        Goodata = 1
+
+        ##Places the fields into temp variables to put into a class
+        firstName = self.firstNameEntry.get()
+        lastName = self.lastNameEntry.get()
+        suffix = self.suffixEntry.get()
+        ASU_ID = self.AngeloIDEntry.get()
+        RFID = self.tagEntry.get()
+        email = self.emailEntry.get()
+        phone = self.phoneEntry.get()
+        hosuing = self.HousingStatusEntry.get()
+
+        ##checks input for any errors
+        ##Might need create a function to check for bad data
+
+        ##First and last Name checks
+        
+        if (len(firstName) > 26 or len(firstName) < 2 or len(lastName) > 26 or len(lastName) < 2):
+            messagebox.showerror(title = "Check Names Length", message = "Either  first name or last Name was either too short or long.")
+            Goodata += 1
+
+        if (Goodata == 1):
+             temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,hosuing)
+             ##DEBUG PRINT STATMENTS
+             ## print(firstName)
+             ## print(lastName)
+             ## print(suffix)
+             ## print(ASU_ID)
+             ##Inputs the entry into the database
+             inputDataBase.inputBasicInfoPeople(temp_person)
+             ## print("INPUTED GUI DEBUG") // DEBUG PRINT STAMTENT
+             ##Prints in console if the entry did get inputted correctly
+             readFromDataBase.readPeopleTable()
+
+        ## After the submition to the people table
+        ## The boxes should clear the info from the entry wiget
+        self.firstNameEntry.delete(0,"end")
+        self.lastNameEntry.delete(0,"end")
+        self.suffixEntry.delete(0,"end")
+        self.AngeloIDEntry.delete(0,"end")
+        self.tagEntry.delete(0,"end")
+        self.emailEntry.delete(0,"end")
+        self.phoneEntry.delete(0,"end")
+        self.HousingStatusEntry.delete(0,"end")
+
+
+        
         self.create_widgets()
 
     #(Comments written 10/21/21. This is only the outline of what the UI needs to do)

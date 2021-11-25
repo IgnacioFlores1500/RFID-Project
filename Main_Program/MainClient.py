@@ -50,7 +50,7 @@ def testCode():
 
     ##DeleteFrom the professor Database using ProfID
     ##deleteFromDataBase.deleteProfessor(2)
-    #deleteFromDataBase.deleteBasicInfoPeople(6)
+    #deleteFromDataBase.deleteBasicInfoPeople(5)
 
     ##Input a person into the professor table with KeyID: NOTE must be in the people table
     ##inputDataBase.inputProfessor()
