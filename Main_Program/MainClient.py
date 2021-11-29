@@ -42,7 +42,7 @@ def testCode():
     # testInputName3 = people("Dogdu", "Erodgon", "Ph.D",999_997, "AA:AA:EE:EE","ERROR@gmail.com", 111_101_3333, "OFF_Campus")
     # inputDataBase.inputBasicInfoPeople(testInputName3)
     
-    ## Shows example of how to return a certain person from the database from RFID
+    ## Shows example of how to return a certain per son from the database from RFID
     ##returns none if there is noneone witht htat RFID
     ##x = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag("AB:CD:EF:IK")
     ##print (x)
