@@ -49,6 +49,10 @@ class RFIDDisplay:
     def __init__(self):
         #Making the application window
         self.window = tk.Tk()
+        ## Maybe a tool for later - Iggy
+        ## self.window.geometry("480x240")
+        ## self.window.columnconfigure(20,0)
+        ## self.window.rowconfigure(20,1)
         self.create_widgets()
         
     
@@ -163,9 +167,17 @@ class RFIDDisplay:
         if CurrentFailedAttempt == True:
             self.display.delete(0, END)
         
+        self.show_admin_buttons()
+        
         ## runs a self.function that creates the fields to input people into the data. 
-        self.entrySection()
-        self.create_widgets()
+        #self.entrySection()
+        #self.create_widgets()
+
+    
+    def show_admin_buttons(self):
+        self.entryButtonSection = tk.Button(self.window, text = "Input person")
+        self.entryButtonSection.grid(row=8, column=0, pady=5)
+        self.entryButtonSection.bind("<Button>", self.entrySection)
 
     #Create class is meant to make the classroom on the UI by making empty seats.
     def create_class(self, event):
@@ -182,6 +194,8 @@ class RFIDDisplay:
             for i in range(recentClassSize):
                 for j in range(3, recentClassSize + 3):
                     seats[(i, j + 3)].destroy()
+
+
         #for i in range(RecentClassSize):
             #for j in range(2, RecentClassSize + 2):
                 #self.b = ttk.Label(self.window, text="")
@@ -213,22 +227,28 @@ class RFIDDisplay:
         RFID = self.tagEntry.get()
         email = self.emailEntry.get()
         phone = self.phoneEntry.get()
-        hosuing = self.HousingStatusEntry.get()
+        housing = self.HousingStatusEntry.get()
 
         ##checks input for any errors
         ##Might need create a function to check for bad data
 
         ##First and last Name checks
-        
         if (len(firstName) > 26 or len(firstName) < 2 or len(lastName) > 26 or len(lastName) < 2):
             messagebox.showerror(title = "Check Names Length", message = "Either  first name or last Name was either too short or long.")
             Goodata += 1
         if (self.stringCheckForNumers(firstName) or self.stringCheckForNumers(lastName)):
-            messagebox.showerror(title = "Number Fail",  meesage = "No numbers are allowed in either the first or last name fields.")
+            messagebox.showerror(title = "Number Fail",  message = "No numbers are allowed in either the first or last name fields.")
             Goodata += 1
-
+        
+        ##checks Suffix for numbers
+        if (self.stringCheckForLetters(suffix)):
+            messagebox.showerror(title = "Suffix Fail", message = "No numbers are allowed in the suffix field.")
+            Goodata += 1
+        
+        
+        ## if there were no errors, the infomation gets inputed
         if (Goodata == 1):
-             temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,hosuing)
+             temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,housing)
              ##DEBUG PRINT STATMENTS
              ## print(firstName)
              ## print(lastName)
@@ -251,13 +271,24 @@ class RFIDDisplay:
         self.phoneEntry.delete(0,"end")
         self.HousingStatusEntry.delete(0,"end")
 
+        self.firstNameEntry.destroy()
+        self.lastNameEntry.destroy()
+        self.suffixEntry.destroy()
+        self.AngeloIDEntry.destroy()
+        self.tagEntry.destroy()
+        self.emailEntry.destroy()
+        self.phoneEntry.destroy()
+        self.HousingStatusEntry.destroy()
+        self.insert_Record_Button.destroy()
 
-        
+        self.show_admin_buttons()
         self.create_widgets()
 
 
     ## function that create the entry fields for showAdminPowers()
-    def entrySection(self):
+    def entrySection(self,event):
+
+        self.entryButtonSection.destroy()
 
         self.classroom = ttk.Entry(self.window, width=50)
         self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
@@ -319,6 +350,7 @@ class RFIDDisplay:
         self.title = ttk.Label(self.window, text="RFID COVID-19 Tracker")
         self.title.grid(row=0, column=0)
 
+        
         #setting up when the user can enter a username
         self.name_entry = ttk.Entry(self.window, width=50)
         self.name_entry.grid(row=1, column=0, sticky=tk.W, pady=5)
@@ -351,6 +383,10 @@ class RFIDDisplay:
     ##Small fucntion to check for numbers in a string
     def stringCheckForNumers(self,string):
         return any(character.isdigit() for character in string)
+    
+    ##Small function to checkl for letters in a string ##Built for the error checking in phone number field.+--.
+    def stringCheckForLetters(self,string):
+        return any(character.isalpha() for character in string)
         
 if __name__ == "__main__":
     main()
