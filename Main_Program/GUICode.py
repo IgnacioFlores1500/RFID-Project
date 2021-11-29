@@ -162,58 +162,9 @@ class RFIDDisplay:
     def show_admin_powers(self):
         if CurrentFailedAttempt == True:
             self.display.delete(0, END)
-            
-        self.classroom = ttk.Entry(self.window, width=50)
-        self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
-        self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
-        self.classroom.bind("<Return>", self.create_class)
-
-        self.firstNameEntry = ttk.Entry(self.window, width=50)
-        self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
-        self.firstNameEntry.insert(tk.END, """Enter a "new Students" First Name""")
-        self.firstNameEntry.bind("<Return>", self.addToDatabase)
-
-        self.lastNameEntry = ttk.Entry(self.window, width=50)
-        self.lastNameEntry.grid(row=9, column=0, sticky=tk.W, pady=5)
-        self.lastNameEntry.insert(tk.END, """Enter a "new Students" Last Name""")
-        self.lastNameEntry.bind("<Return>", self.addToDatabase)
-
-        self.suffixEntry = ttk.Entry(self.window, width=50)
-        self.suffixEntry.grid(row=10, column=0, sticky=tk.W, pady=5)
-        self.suffixEntry.insert(tk.END, """Enter a "new Students" Suffix""")
-        self.suffixEntry.bind("<Return>", self.addToDatabase)
-
-        self.AngeloIDEntry = ttk.Entry(self.window, width=50)
-        self.AngeloIDEntry.grid(row=11, column=0, sticky=tk.W, pady=5)
-        self.AngeloIDEntry.insert(tk.END, """Enter a "new Students" Angelo ID """)
-        self.AngeloIDEntry.bind("<Return>", self.addToDatabase)
-
-        self.tagEntry = ttk.Entry(self.window, width=50)
-        self.tagEntry.grid(row=12, column=0, sticky=tk.W, pady=5)
-        self.tagEntry.insert(tk.END, """Enter a "new Students" RFID tag""")
-        self.tagEntry.bind("<Return>", self.addToDatabase)
-
-        self.phoneEntry = ttk.Entry(self.window, width=50)
-        self.phoneEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
-        self.phoneEntry.insert(tk.END, """Enter a "new Students" phoneNumber""")
-        self.phoneEntry.bind("<Return>", self.addToDatabase)
-
-        self.emailEntry = ttk.Entry(self.window, width=50)
-        self.emailEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
-        self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
-        self.emailEntry.bind("<Return>", self.addToDatabase)
-    
-        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
-        self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
-        self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
         
-        ##Update button, I just wanted a GUI way approach to adding People to the Database
-        ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
-        #fixed button, moved button to admin powers. figured it would make it appear and disappear correctly
-        self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
-        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
-        self.insert_Record_Button.bind("<Button>", self.addToDatabase)
+        ## runs a self.function that creates the fields to input people into the data. 
+        self.entrySection()
         self.create_widgets()
 
     #Create class is meant to make the classroom on the UI by making empty seats.
@@ -272,6 +223,9 @@ class RFIDDisplay:
         if (len(firstName) > 26 or len(firstName) < 2 or len(lastName) > 26 or len(lastName) < 2):
             messagebox.showerror(title = "Check Names Length", message = "Either  first name or last Name was either too short or long.")
             Goodata += 1
+        if (self.stringCheckForNumers(firstName) or self.stringCheckForNumers(lastName)):
+            messagebox.showerror(title = "Number Fail",  meesage = "No numbers are allowed in either the first or last name fields.")
+            Goodata += 1
 
         if (Goodata == 1):
              temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,hosuing)
@@ -299,6 +253,63 @@ class RFIDDisplay:
 
 
         
+        self.create_widgets()
+
+
+    ## function that create the entry fields for showAdminPowers()
+    def entrySection(self):
+
+        self.classroom = ttk.Entry(self.window, width=50)
+        self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
+        self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
+        self.classroom.bind("<Return>", self.create_class)
+
+        self.firstNameEntry = ttk.Entry(self.window, width=50)
+        self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.firstNameEntry.insert(tk.END, """Enter a "new Students" First Name""")
+        self.firstNameEntry.bind("<Return>", self.addToDatabase)
+
+        self.lastNameEntry = ttk.Entry(self.window, width=50)
+        self.lastNameEntry.grid(row=9, column=0, sticky=tk.W, pady=5)
+        self.lastNameEntry.insert(tk.END, """Enter a "new Students" Last Name""")
+        self.lastNameEntry.bind("<Return>", self.addToDatabase)
+
+        self.suffixEntry = ttk.Entry(self.window, width=50)
+        self.suffixEntry.grid(row=10, column=0, sticky=tk.W, pady=5)
+        self.suffixEntry.insert(tk.END, """Enter a "new Students" Suffix""")
+        self.suffixEntry.bind("<Return>", self.addToDatabase)
+
+        self.AngeloIDEntry = ttk.Entry(self.window, width=50)
+        self.AngeloIDEntry.grid(row=11, column=0, sticky=tk.W, pady=5)
+        self.AngeloIDEntry.insert(tk.END, """Enter a "new Students" Angelo ID """)
+        self.AngeloIDEntry.bind("<Return>", self.addToDatabase)
+
+        self.tagEntry = ttk.Entry(self.window, width=50)
+        self.tagEntry.grid(row=12, column=0, sticky=tk.W, pady=5)
+        self.tagEntry.insert(tk.END, """Enter a "new Students" RFID tag""")
+        self.tagEntry.bind("<Return>", self.addToDatabase)
+
+        self.phoneEntry = ttk.Entry(self.window, width=50)
+        self.phoneEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.phoneEntry.insert(tk.END, """Enter a "new Students" phoneNumber""")
+        self.phoneEntry.bind("<Return>", self.addToDatabase)
+
+        self.emailEntry = ttk.Entry(self.window, width=50)
+        self.emailEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
+        self.emailEntry.bind("<Return>", self.addToDatabase)
+    
+        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
+        self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
+        
+        ##Update button, I just wanted a GUI way approach to adding People to the Database
+        ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
+        #fixed button, moved button to admin powers. figured it would make it appear and disappear correctly
+        self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
+        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.bind("<Button>", self.addToDatabase)
         self.create_widgets()
 
     #(Comments written 10/21/21. This is only the outline of what the UI needs to do)
@@ -335,6 +346,11 @@ class RFIDDisplay:
         
         
         #The Following code is for the display of seats. The seats are represented by brackets and can be empty
+    
+
+    ##Small fucntion to check for numbers in a string
+    def stringCheckForNumers(self,string):
+        return any(character.isdigit() for character in string)
         
 if __name__ == "__main__":
     main()
