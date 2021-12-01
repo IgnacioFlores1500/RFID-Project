@@ -14,8 +14,13 @@ from tkinter import ttk
 from tkinter import messagebox
 # sublibrary to ask for any info the program needs from the user 
 from tkinter import simpledialog
-from tkinter.constants import END
+from tkinter.constants import CENTER, DISABLED, END
+from typing import Counter
 # sublibrary to 
+
+
+##Allows the GUI to know when a login was made
+import time
 
 ##Imports a function from database file to return if a personID has edit_prilvages
 from dataBaseCode import returnFromDataBase
@@ -38,7 +43,6 @@ CurrentLogin = ""
 
 
 def main():
-    RecentClassSize = 0
     #creating program
     program = RFIDDisplay()
     #starting event loop
@@ -49,10 +53,12 @@ class RFIDDisplay:
     def __init__(self):
         #Making the application window
         self.window = tk.Tk()
-        ## Maybe a tool for later - Iggy
-        ## self.window.geometry("480x240")
-        ## self.window.columnconfigure(20,0)
-        ## self.window.rowconfigure(20,1)
+
+        ##Creates the size of the application
+        self.canvas = tk.Canvas(self.window, width=900, height=600)
+        ##Creates the number of columns and rows before hand
+        self.canvas.grid(column=15, rows=20)
+
         self.create_widgets()
         
     
@@ -152,32 +158,83 @@ class RFIDDisplay:
         else:
             #If Above passes, show the create classroom -iggy
             self.show_admin_powers()
-            self.login_button.destroy()
+            
 
             #if the login is valid, show who is logged in
             self.recentUser.destroy()
-            self.recentUser = ttk.Label(self.window, text =  " " + user)
-            self.recentUser.grid(row=6, column=0,sticky=tk.W, pady=20)
+            self.recentUser = ttk.Label(self.window, text =  "Current User: " + user, font=3)
+            self.recentUser.grid(row=2, column=0,sticky=tk.W, columnspan=5)
+
+
+            ##Logged in time: When the user logged in
+            epochSeconds = time.time()
+            localTime = time.ctime(epochSeconds)
+            self.loginTime = ttk.Label(self.window, text = "Session started " + localTime, font=3)
+            self.loginTime.grid(row=3, column=0,sticky=tk.W, columnspan=5)
 
         
-        self.create_widgets()
+       
             
     #show admin powers is to enable the ability to change a class and or roster
     def show_admin_powers(self):
         if CurrentFailedAttempt == True:
             self.display.delete(0, END)
         
+        ##Deletes the login entries. Could possible change later after implementing the RFID scanner
+        self.name_entry.destroy()
+        self.password_entry.destroy()
+        self.login_button.destroy()
+
+        ##show_admin_button shows the buttons that allows professor to edit and add classrooms/students/professors, ect
+        ##SignoutButton, is created to allow the professor to signout of their session. This might be a way to allow students to once again sign-in
         self.show_admin_buttons()
+        self.SignOutButton()
         
         ## runs a self.function that creates the fields to input people into the data. 
         #self.entrySection()
         #self.create_widgets()
 
     
+
+    ##This function creates the button used for the admin status. 
     def show_admin_buttons(self):
-        self.entryButtonSection = tk.Button(self.window, text = "Input person")
-        self.entryButtonSection.grid(row=8, column=0, pady=5)
+        ##Input person Button
+        self.entryButtonSection = tk.Button(self.window,width=13, text = "Create person")
+        self.entryButtonSection.grid(row=8, column=0,sticky=tk.W, pady=5)
         self.entryButtonSection.bind("<Button>", self.entrySection)
+
+        ##Create Classroom button
+        self.createClassRoom = tk.Button(self.window,width=13, text = "Create Classroom")
+        self.createClassRoom.grid(row=8, column=1,sticky=tk.W, pady=5)
+        self.createClassRoom.bind("<Button>", self.createClassEntry)
+
+        self.tempButton2 = tk.Button(self.window, width=13, text = "DEBUG",state=tk.DISABLED)
+        self.tempButton2.grid(row=8, column=2,sticky=tk.W, pady=5)
+        ##self.tempButton2.bind("<Button>", self.entrySection)
+
+        self.tempButton3 = tk.Button(self.window,width=13, text = "Edit person")
+        self.tempButton3.grid(row=9, column=0,sticky=tk.W, pady=5)
+        self.tempButton3.bind("<Button>", self.entrySection)
+
+        self.tempButton4 = tk.Button(self.window,width=13, text = "Edit Classroom")
+        self.tempButton4.grid(row=9, column=1,sticky=tk.W, pady=5)
+        self.tempButton4.bind("<Button>", self.entrySection)
+
+        self.tempButton5 = tk.Button(self.window,width=13, text = "Delete person")
+        self.tempButton5.grid(row=9, column=2,sticky=tk.W, pady=5)
+        self.tempButton5.bind("<Button>", self.entrySection)
+
+
+    ##Creats the Entry for the classroom after the button is clicked
+    def createClassEntry(self, event):
+
+        self.destroyAllPossibleAdminFields_Buttons()
+        
+        self.classroom = ttk.Entry(self.window, width=50)
+        self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
+        self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
+        self.classroom.bind("<Return>", self.create_class)    
+    
 
     #Create class is meant to make the classroom on the UI by making empty seats.
     def create_class(self, event):
@@ -186,14 +243,15 @@ class RFIDDisplay:
         hasBeenCreated = True
         global classSize
 
+
         classSize = self.classroom.get()
         ###I assume to type_cast classSize from string to integer
         classSize = int(classSize)
 
         if recentClassSize != 0:
             for i in range(recentClassSize):
-                for j in range(3, recentClassSize + 3):
-                    seats[(i, j + 3)].destroy()
+                for j in range(5, recentClassSize + 5):
+                    seats[(i, j + 5)].destroy()
 
 
         #for i in range(RecentClassSize):
@@ -202,13 +260,26 @@ class RFIDDisplay:
                 #self.b.grid(row=i, column=j, pady=5)
             
         for i in range(classSize):
-            for j in range(3, classSize + 3):
+            for j in range(5, classSize + 5):
                 b = ttk.Label(self.window, text="RFID COVID-19 Tracker")
                 b.grid(row=i, column=j, pady=5)
-                seats[(i, j + 3)] = b
+                seats[(i, j + 5)] = b
         
         recentClassSize = classSize
-        self.create_widgets()
+        
+
+        ##destroys the entry field
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.classroom.destroy()
+
+        ##Copy from create_widgets Function. This is a crappy fix to fix 
+        ## A bug when creating classrooms
+        self.title = ttk.Label(self.window, text="RFID COVID-19 Tracker")
+        self.title.config(anchor=CENTER)
+        self.title.grid(row=0, column=0,columnspan=5)
+       
+        ##Replaces the fields location witht the admin buttons
+        self.show_admin_buttons()
 
     #this function is connected to the update database button specifically for 
     #the time being
@@ -271,29 +342,46 @@ class RFIDDisplay:
         self.phoneEntry.delete(0,"end")
         self.HousingStatusEntry.delete(0,"end")
 
-        self.firstNameEntry.destroy()
-        self.lastNameEntry.destroy()
-        self.suffixEntry.destroy()
-        self.AngeloIDEntry.destroy()
-        self.tagEntry.destroy()
-        self.emailEntry.destroy()
-        self.phoneEntry.destroy()
-        self.HousingStatusEntry.destroy()
-        self.insert_Record_Button.destroy()
+
+        ##Calls deleteAdminFunction now 12-1-2021
+        ## self.firstNameEntry.destroy()
+        ## self.lastNameEntry.destroy()
+        ## self.suffixEntry.destroy()
+        ## self.AngeloIDEntry.destroy()
+        ## self.tagEntry.destroy()
+        ## self.emailEntry.destroy()
+        ## self.phoneEntry.destroy()
+        ## self.HousingStatusEntry.destroy()
+        ## self.insert_Record_Button.destroy()
+        self.destroyAllPossibleAdminFields_Buttons()
 
         self.show_admin_buttons()
-        self.create_widgets()
+        
 
 
+    
     ## function that create the entry fields for showAdminPowers()
     def entrySection(self,event):
 
-        self.entryButtonSection.destroy()
+        ##When the button is pressed, delete these buttons that are in the way
+        ## Possible change soon
+        ##Changed 12-1-2021
+        ## self.entryButtonSection.destroy()
+        ## self.createClassRoom.destroy()
+        ## self.tempButton2.destroy()
+        ## self.tempButton3.destroy()
+        ## self.tempButton4.destroy()
+        ## self.tempButton5.destroy()
+        self.destroyAllPossibleAdminFields_Buttons()
+       
 
-        self.classroom = ttk.Entry(self.window, width=50)
-        self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
-        self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
-        self.classroom.bind("<Return>", self.create_class)
+
+
+        ##Moved to the create_class function
+        ## self.classroom = ttk.Entry(self.window, width=50)
+        ## self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
+        ## self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
+        ## self.classroom.bind("<Return>", self.create_class)
 
         self.firstNameEntry = ttk.Entry(self.window, width=50)
         self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
@@ -341,25 +429,66 @@ class RFIDDisplay:
         self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
         self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
-        self.create_widgets()
+        
 
+    ##This method should destroy ALL possible fields that are on the left side of the screen
+    ## entry fields, buttons, ect, EVERYTHING
+
+    def destroyAllPossibleAdminFields_Buttons(self):
+        try:
+            self.entryButtonSection.destroy()
+            self.createClassRoom.destroy()
+            self.tempButton2.destroy()
+            self.tempButton3.destroy()
+            self.tempButton4.destroy()
+            self.tempButton5.destroy()
+            ##
+            self.firstNameEntry.destroy()
+            self.lastNameEntry.destroy()
+            self.suffixEntry.destroy()
+            self.AngeloIDEntry.destroy()
+            self.tagEntry.destroy()
+            self.emailEntry.destroy()
+            self.phoneEntry.destroy()
+            self.HousingStatusEntry.destroy()
+            self.insert_Record_Button.destroy()
+        except:
+            pass
+
+        
+    ##Creating the button for the signout after the good login
+    def SignOutButton(self):
+        self.signOutbutton = tk.Button(self.window, text="Sign Out",width=12,height=5)
+        self.signOutbutton.grid(row=18, column=0, rowspan=2,columnspan=2,
+         sticky=tk.W,)
+
+        self.signOutbutton.bind("<Button>", self.signOutFunction)
+
+    ##creates the function after pressing said signoutButton
+    def signOutFunction(self,event):
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.create_widgets()
+        self.signOutbutton.destroy()
+
+    
     #(Comments written 10/21/21. This is only the outline of what the UI needs to do)
     #The UI needs to display the classroom and the positions of the users
     def create_widgets(self):
     #creating the user interface
         self.title = ttk.Label(self.window, text="RFID COVID-19 Tracker")
-        self.title.grid(row=0, column=0)
+        self.title.config(anchor=CENTER)
+        self.title.grid(row=0, column=0,columnspan=5)
 
-        
+        print("createdWiget")
         #setting up when the user can enter a username
-        self.name_entry = ttk.Entry(self.window, width=50)
-        self.name_entry.grid(row=1, column=0, sticky=tk.W, pady=5)
+        self.name_entry = ttk.Entry(self.window, width=25)
+        self.name_entry.grid(row=1, column=0, sticky=tk.W, pady=5,columnspan=5)
         self.name_entry.insert(tk.END, "GoodBye")
         self.name_entry.bind("<Return>", self.validLogin)
         
         #setting up when the user can enter a password
-        self.password_entry = ttk.Entry(self.window, width=50)
-        self.password_entry.grid(row=2, column=0, sticky=tk.W, pady=5)
+        self.password_entry = ttk.Entry(self.window, width=25)
+        self.password_entry.grid(row=2, column=0, sticky=tk.W, pady=5,columnspan=5)
         self.password_entry.insert(tk.END, "Hello")
         self.password_entry.bind("<Return>", self.validLogin)
         
@@ -369,8 +498,10 @@ class RFIDDisplay:
         self.login_button.bind("<Button>", self.validLogin)
             
         #creating a label for most recent log in
-        self.recentTag = ttk.Label(self.window, text="This is the most Recent login")
-        self.recentTag.grid(row=5, column=0,sticky=tk.W, pady=20)
+        ##Commenting this for now.
+        ##could reuse this for feature later
+        ## self.recentTag = ttk.Label(self.window, text="This is the most Recent login")
+        ## self.recentTag.grid(row=5, column=0,sticky=tk.W, pady=20)
 
         #creating the the display to show if a user is logged in
         self.recentUser = ttk.Label(self.window)
@@ -379,7 +510,7 @@ class RFIDDisplay:
         
         #The Following code is for the display of seats. The seats are represented by brackets and can be empty
     
-
+######################################################################################################################################################
     ##Small fucntion to check for numbers in a string
     def stringCheckForNumers(self,string):
         return any(character.isdigit() for character in string)
