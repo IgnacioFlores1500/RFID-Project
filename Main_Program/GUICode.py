@@ -446,21 +446,69 @@ class RFIDDisplay:
     def destroyAllPossibleAdminFields_Buttons(self):
         try:
             self.entryButtonSection.destroy()
+        except:
+            pass
+        try:
             self.createClassRoom.destroy()
+        except:
+            pass
+        try:
             self.debugButton.destroy()
+        except:
+            pass
+        try:
             self.editPersonButton.destroy()
+        except:
+            pass
+        try:
             self.editClassroomButton.destroy()
+        except:
+            pass
+        try:
             self.deletePersonButton.destroy()
+        except:
+            pass
+        try:
             self.classroom.destroy()
+        except:
+            pass
+        try:
             self.firstNameEntry.destroy()
+        except:
+            pass
+        try:
             self.lastNameEntry.destroy()
+        except:
+            pass
+        try:
             self.suffixEntry.destroy()
+        except:
+            pass
+        try:
             self.AngeloIDEntry.destroy()
+        except:
+            pass
+        try:
             self.tagEntry.destroy()
+        except:
+            pass
+        try:
             self.emailEntry.destroy()
+        except:
+            pass
+        try:
             self.phoneEntry.destroy()
+        except:
+            pass
+        try:
             self.HousingStatusEntry.destroy()
+        except:
+            pass
+        try:
             self.insert_Record_Button.destroy()
+        except:
+            pass
+        try:
             self.homeButton.destroy()
         except:
             pass
@@ -492,7 +540,7 @@ class RFIDDisplay:
         self.homeButton.bind("<Button>", self.goHome)
 
     ##A function to bind the home button to to make it go to the home
-    def goHome(self):
+    def goHome(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
         self.show_admin_powers()
     
