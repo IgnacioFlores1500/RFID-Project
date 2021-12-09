@@ -54,14 +54,52 @@ class RFIDDisplay:
         #Making the application window
         self.window = tk.Tk()
 
+        ##program Dimenisons
+        windowWidgth = 1600
+        windowHight = 900
+
+        ##screen dimension
+        screenWidth = self.window.winfo_screenwidth()
+        screenHight = self.window.winfo_screenheight()
+
+        ##center points
+        centerX = int(screenWidth/2 - windowWidgth /2)
+        centerY = int(screenHight/2 - windowHight /2)
+
+        #gemotry
+
+
+        self.window.geometry(f'{windowWidgth}x{windowHight}+{centerX}+{centerY}')
+        #self.window.resizable(0,0)
+        
         ##Creates the size of the application
-        self.canvas = tk.Canvas(self.window, width=900, height=600)
+        ##self.canvas = tk.Canvas(self.window, width=900, height=600)
+        ##self.window.geometry = ('900x900')
         ##Creates the number of columns and rows before hand
-        self.canvas.grid(column=15, rows=20)
+        #self.window.resizable(0,0)
+        ##self.canvas.grid(column=15, rows=20)
+        
+        #self.window.columnconfigure(0, weight=1)
+        #self.window.rowconfigure(0,weight=1)
+        
+        # self.canvas.columnconfigure(6, weight=1)
+        # self.canvas.columnconfigure(0, weight=1)
 
         self.create_widgets()
-        
+        #self.welcomScreen()
     
+    
+
+
+    def welcomScreen(self):
+        #self.window.grid_columnconfigure()
+        self.RFIMessage = ttk.Label(self.window, text="Please scan your RFID", font=("Arial",20))
+        #self.RFIMessage.config(anchor=CENTER)
+        self.RFIMessage.grid(column=0,columnspan=10, row=9, sticky="es" )
+        
+        ##self.RFIMessage.bind("<Return>", self.create_widgets)
+        ##self.canvas.columnconfigure(6, weight=1)
+     
     #isAdmin sends what the user input for logging in. This will be the log in page for the UI and
     #if the username and password are correct then it will provide access to the classroom state and 
     #modifying priveliges to the classroom as well
