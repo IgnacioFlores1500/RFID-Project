@@ -189,6 +189,7 @@ class RFIDDisplay:
         ##SignoutButton, is created to allow the professor to signout of their session. This might be a way to allow students to once again sign-in
         self.show_admin_buttons()
         self.SignOutButton()
+        #self.createHomeButton()
         
         ## runs a self.function that creates the fields to input people into the data. 
         #self.entrySection()
@@ -208,21 +209,25 @@ class RFIDDisplay:
         self.createClassRoom.grid(row=8, column=1,sticky=tk.W, pady=5)
         self.createClassRoom.bind("<Button>", self.createClassEntry)
 
-        self.tempButton2 = tk.Button(self.window, width=13, text = "DEBUG",state=tk.DISABLED)
-        self.tempButton2.grid(row=8, column=2,sticky=tk.W, pady=5)
+        self.debugButton = tk.Button(self.window, width=13, text = "DEBUG",state=tk.DISABLED)
+        self.debugButton.grid(row=8, column=2,sticky=tk.W, pady=5)
         ##self.tempButton2.bind("<Button>", self.entrySection)
 
-        self.tempButton3 = tk.Button(self.window,width=13, text = "Edit person")
-        self.tempButton3.grid(row=9, column=0,sticky=tk.W, pady=5)
-        self.tempButton3.bind("<Button>", self.entrySection)
+        self.editPersonButton = tk.Button(self.window,width=13, text = "Edit person")
+        self.editPersonButton.grid(row=9, column=0,sticky=tk.W, pady=5)
+        self.editPersonButton.bind("<Button>", self.entrySection)
 
-        self.tempButton4 = tk.Button(self.window,width=13, text = "Edit Classroom")
-        self.tempButton4.grid(row=9, column=1,sticky=tk.W, pady=5)
-        self.tempButton4.bind("<Button>", self.entrySection)
+        self.editClassroomButton = tk.Button(self.window,width=13, text = "Edit Classroom")
+        self.editClassroomButton.grid(row=9, column=1,sticky=tk.W, pady=5)
+        self.editClassroomButton.bind("<Button>", self.entrySection)
 
-        self.tempButton5 = tk.Button(self.window,width=13, text = "Delete person")
-        self.tempButton5.grid(row=9, column=2,sticky=tk.W, pady=5)
-        self.tempButton5.bind("<Button>", self.entrySection)
+        self.deletePersonButton = tk.Button(self.window,width=13, text = "Delete person")
+        self.deletePersonButton.grid(row=9, column=2,sticky=tk.W, pady=5)
+        self.deletePersonButton.bind("<Button>", self.entrySection)
+        try:
+            self.homeButton.destroy()
+        except:
+            pass
 
 
     ##Creats the Entry for the classroom after the button is clicked
@@ -233,7 +238,9 @@ class RFIDDisplay:
         self.classroom = ttk.Entry(self.window, width=50)
         self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
         self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
-        self.classroom.bind("<Return>", self.create_class)    
+        self.classroom.bind("<Return>", self.create_class)  
+
+        self.createHomeButton()  
     
 
     #Create class is meant to make the classroom on the UI by making empty seats.
@@ -429,6 +436,8 @@ class RFIDDisplay:
         self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
         self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
+
+        self.createHomeButton()
         
 
     ##This method should destroy ALL possible fields that are on the left side of the screen
@@ -438,11 +447,11 @@ class RFIDDisplay:
         try:
             self.entryButtonSection.destroy()
             self.createClassRoom.destroy()
-            self.tempButton2.destroy()
-            self.tempButton3.destroy()
-            self.tempButton4.destroy()
-            self.tempButton5.destroy()
-            ##
+            self.debugButton.destroy()
+            self.editPersonButton.destroy()
+            self.editClassroomButton.destroy()
+            self.deletePersonButton.destroy()
+            self.classroom.destroy()
             self.firstNameEntry.destroy()
             self.lastNameEntry.destroy()
             self.suffixEntry.destroy()
@@ -452,6 +461,7 @@ class RFIDDisplay:
             self.phoneEntry.destroy()
             self.HousingStatusEntry.destroy()
             self.insert_Record_Button.destroy()
+            self.homeButton.destroy()
         except:
             pass
 
@@ -463,13 +473,28 @@ class RFIDDisplay:
          sticky=tk.W,)
 
         self.signOutbutton.bind("<Button>", self.signOutFunction)
+    
+
 
     ##creates the function after pressing said signoutButton
     def signOutFunction(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
-        self.create_widgets()
         self.signOutbutton.destroy()
+        self.loginTime.destroy()
+        self.recentUser.destroy()
+        self.homeButton.destroy()
+        self.create_widgets()
 
+    ##A function to create the Home Button
+    def createHomeButton(self):
+        self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
+        self.homeButton.grid(row=18,column=1,rowspan=2,columnspan=2,sticky=tk.W)
+        self.homeButton.bind("<Button>", self.goHome)
+
+    ##A function to bind the home button to to make it go to the home
+    def goHome(self):
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.show_admin_powers()
     
     #(Comments written 10/21/21. This is only the outline of what the UI needs to do)
     #The UI needs to display the classroom and the positions of the users
@@ -506,6 +531,8 @@ class RFIDDisplay:
         #creating the the display to show if a user is logged in
         self.recentUser = ttk.Label(self.window)
         self.recentUser.grid(row=6, column=0,sticky=tk.W, pady=20)
+        #always create a home button (does not need to be placed) so it can be deleted
+
         
         
         #The Following code is for the display of seats. The seats are represented by brackets and can be empty
