@@ -550,6 +550,10 @@ class RFIDDisplay:
             self.homeButton.destroy()
         except:
             pass
+        try:
+            self.signOutbutton.destroy()
+        except:
+            pass
 
         
     ##Creating the button for the signout after the good login
@@ -568,7 +572,6 @@ class RFIDDisplay:
         self.signOutbutton.destroy()
         self.loginTime.destroy()
         self.recentUser.destroy()
-        self.homeButton.destroy()
         self.create_widgets()
 
     ##A function to create the Home Button
