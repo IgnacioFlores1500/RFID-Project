@@ -479,6 +479,11 @@ class RFIDDisplay:
         self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
 
+        var = tk.IntVar()
+        self.isPofessorButton = tk.Radiobutton(self.window, text='Option 1', variable=var, value=1, command = self.goHome)
+        self.isPofessorButton.grid(row=16, column=1, sticky=tk.W, pady=5)
+        #self.isPofessorButton.bind("<Button>", self.addToDatabase)
+
         self.createHomeButton()
         
 
@@ -568,7 +573,6 @@ class RFIDDisplay:
 
         self.signOutbutton.bind("<Button>", self.signOutFunction)
     
-
 
     ##creates the function after pressing said signoutButton
     def signOutFunction(self,event):
