@@ -7,7 +7,7 @@
 
 
 
-##something after push
+
 
 ##
 # To use the "generic" widgets
@@ -89,8 +89,8 @@ class RFIDDisplay:
         # self.canvas.columnconfigure(6, weight=1)
         # self.canvas.columnconfigure(0, weight=1)
 
-        self.create_widgets()
-        #self.welcomScreen()
+        #self.create_widgets()
+        self.welcomScreen()
     
     
 

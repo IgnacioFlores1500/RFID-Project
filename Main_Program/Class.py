@@ -15,6 +15,21 @@ class people:
         self.Email = Email
         self.Phone = Phone
         self.CampusOFFCampus = CampusOFFCampus
+
+class courses:
+    def __init__(self, courseName, buildingName, roomNumber, roomClassSize, startDate, endDate, time):
+        self.courseName = courseName
+        self.buildingName = buildingName
+        self.roomNumber = roomNumber
+        self.roomClassSize = roomClassSize
+        self.startDate = startDate
+        self.endDate = endDate
+        self.time = time
+
+
+    
+
+        
     
 
        
