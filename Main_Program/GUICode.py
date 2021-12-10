@@ -742,6 +742,7 @@ class RFIDDisplay:
     ##creates the function after pressing said signoutButton
     def signOutFunction(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
+        exit()
         self.signOutbutton.destroy()
         self.loginTime.destroy()
         self.recentUser.destroy()
