@@ -84,6 +84,7 @@ def testCode():
     ##seat(i=1, j=3, courseID 1)
     print(returnFromDataBase.checkSeat(1, 3,1))
     print(returnFromDataBase.checkSeatHealth(1, 3,1))
+    print(readFromDataBase.readActiveCourseTable())
     ##Ignore this part of the demo
     # firstName = "Bob"
     # x = returnsInfomationFromPeopleTableFromFirstName(firstName)

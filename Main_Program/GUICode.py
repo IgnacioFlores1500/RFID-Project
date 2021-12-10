@@ -89,8 +89,8 @@ class RFIDDisplay:
         # self.canvas.columnconfigure(6, weight=1)
         # self.canvas.columnconfigure(0, weight=1)
 
-        #self.create_widgets()
-        self.welcomScreen()
+        self.create_widgets()
+        #self.welcomScreen()
     
     
 
@@ -249,12 +249,12 @@ class RFIDDisplay:
         ##Input person Button
         self.entryButtonSection = tk.Button(self.window,width=13, text = "Create person")
         self.entryButtonSection.grid(row=8, column=0,sticky=tk.W, pady=5)
-        self.entryButtonSection.bind("<Button>", self.entrySection)
+        self.entryButtonSection.bind("<Button>", self.createStudentsEntrySection)
 
         ##Create Classroom button
         self.createClassRoom = tk.Button(self.window,width=13, text = "Create Classroom")
         self.createClassRoom.grid(row=8, column=1,sticky=tk.W, pady=5)
-        self.createClassRoom.bind("<Button>", self.createClassEntry)
+        self.createClassRoom.bind("<Button>", self.createClassroomEntrySection)
 
         self.debugButton = tk.Button(self.window, width=13, text = "DEBUG",state=tk.DISABLED)
         self.debugButton.grid(row=8, column=2,sticky=tk.W, pady=5)
@@ -262,15 +262,15 @@ class RFIDDisplay:
 
         self.editPersonButton = tk.Button(self.window,width=13, text = "Edit person")
         self.editPersonButton.grid(row=9, column=0,sticky=tk.W, pady=5)
-        self.editPersonButton.bind("<Button>", self.entrySection)
+        self.editPersonButton.bind("<Button>", self.editStudentsEntrySection)
 
         self.editClassroomButton = tk.Button(self.window,width=13, text = "Edit Classroom")
         self.editClassroomButton.grid(row=9, column=1,sticky=tk.W, pady=5)
-        self.editClassroomButton.bind("<Button>", self.entrySection)
+        self.editClassroomButton.bind("<Button>", self.createClassEntry)
 
         self.deletePersonButton = tk.Button(self.window,width=13, text = "Delete person")
         self.deletePersonButton.grid(row=9, column=2,sticky=tk.W, pady=5)
-        self.deletePersonButton.bind("<Button>", self.entrySection)
+        self.deletePersonButton.bind("<Button>", self.deleteStudentEntrySection)
         try:
             self.homeButton.destroy()
         except:
@@ -298,28 +298,30 @@ class RFIDDisplay:
         global classSize
 
 
-        classSize = self.classroom.get()
+        course = self.classroom.get()
         ###I assume to type_cast classSize from string to integer
-        classSize = int(classSize)
+        course = int(course)
 
         if recentClassSize != 0:
             for i in range(recentClassSize):
                 for j in range(5, recentClassSize + 5):
-                    seats[(i, j + 5)].destroy()
+                    try:
+                        seats[(i, j + 5)].destroy()
+                    except:
+                        pass
 
 
         #for i in range(RecentClassSize):
             #for j in range(2, RecentClassSize + 2):
                 #self.b = ttk.Label(self.window, text="")
                 #self.b.grid(row=i, column=j, pady=5)
-            
-        for i in range(classSize):
-            for j in range(5, classSize + 5):
-                b = ttk.Label(self.window, text="RFID COVID-19 Tracker")
+        for i in range(course):
+            for j in range(5, course + 5):
+                b = ttk.Label(self.window, text=returnFromDataBase.checkSeat(i, j, course) + returnFromDataBase.checkSeatHealth(i, j, course))
                 b.grid(row=i, column=j, pady=5)
                 seats[(i, j + 5)] = b
         
-        recentClassSize = classSize
+        recentClassSize = course
         
 
         ##destroys the entry field
@@ -411,11 +413,129 @@ class RFIDDisplay:
 
         self.show_admin_buttons()
         
+    def deleteStudentEntrySection(self,event):
+        self.destroyAllPossibleAdminFields_Buttons()
+        dataBasePeople = []
+        dataBasePeople = readFromDataBase.readPeopleTable()
+        peopleOptions = []
+        
+        peopleOptionsCt = 0
+        for i in dataBasePeople:
+            peopleOptions.append(i[1])
 
+        deleteVar = tk.StringVar()
+        self.studentToDelete = ttk.Combobox(self.window, width = 50, textvariable=deleteVar, values=peopleOptions)
+        self.studentToDelete.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.createHomeButton()
+        #after this creation this is where it needs to delete from database
+        #You can do this with a bind or just a button and get the value
 
+    def editStudentsEntrySection(self,event):
+        self.destroyAllPossibleAdminFields_Buttons()
+        dataBasePeople = []
+        dataBasePeople = readFromDataBase.readPeopleTable()
+        peopleOptions = []
+
+        peopleOptionsCt = 0
+        for i in dataBasePeople:
+            peopleOptions.append(i[1])
+
+        studentVar = tk.StringVar()
+        self.studentChosen = ttk.Combobox(self.window, width = 50, textvariable=studentVar, values=peopleOptions)
+        self.studentChosen.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.studentChosen.bind("<Return>", self.showPossibleStudentEdits)
+        self.createHomeButton()
     
+
+    def showPossibleStudentEdits(self, event):
+        
+        ##When the button is pressed, delete these buttons that are in the way
+        selectedStudent = self.studentChosen.get()
+        self.destroyAllPossibleAdminFields_Buttons()
+        studentData = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(selectedStudent)
+        print("Start \n\n", studentData, "End \n\n")
+        self.firstNameEntry = ttk.Entry(self.window, width=50)
+        self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.firstNameEntry.insert(tk.END, studentData[1])
+        self.firstNameEntry.bind("<Return>", self.addToDatabase)
+
+        self.lastNameEntry = ttk.Entry(self.window, width=50)
+        self.lastNameEntry.grid(row=9, column=0, sticky=tk.W, pady=5)
+        self.lastNameEntry.insert(tk.END, studentData[2])
+        self.lastNameEntry.bind("<Return>", self.addToDatabase)
+
+        self.suffixEntry = ttk.Entry(self.window, width=50)
+        self.suffixEntry.grid(row=10, column=0, sticky=tk.W, pady=5)
+        self.suffixEntry.insert(tk.END, studentData[3])
+        self.suffixEntry.bind("<Return>", self.addToDatabase)
+
+        self.AngeloIDEntry = ttk.Entry(self.window, width=50)
+        self.AngeloIDEntry.grid(row=11, column=0, sticky=tk.W, pady=5)
+        self.AngeloIDEntry.insert(tk.END, studentData[4])
+        self.AngeloIDEntry.bind("<Return>", self.addToDatabase)
+
+        self.tagEntry = ttk.Entry(self.window, width=50)
+        self.tagEntry.grid(row=12, column=0, sticky=tk.W, pady=5)
+        self.tagEntry.insert(tk.END, studentData[5])
+        self.tagEntry.bind("<Return>", self.addToDatabase)
+
+
+        self.emailEntry = ttk.Entry(self.window, width=50)
+        self.emailEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.emailEntry.insert(tk.END, studentData[6])
+        self.emailEntry.bind("<Return>", self.addToDatabase)
+
+        self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
+        self.insert_Record_Button.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.bind("<Button>", self.addToDatabase)
+
+        var = tk.IntVar()
+        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1, command = self.goHome)
+        self.isPofessorButton.grid(row=14, column=1, sticky=tk.W, pady=5)
+        #self.isPofessorButton.bind("<Button>", self.addToDatabase)
+
+        self.createHomeButton()
+    
+    def createClassroomEntrySection(self,event):
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.createHomeButton()
+        self.insertCourseName = tk.Entry(self.window, width=50)
+        self.insertCourseName.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.insertCourseName.insert(tk.END, "insert Course Name")
+        self.insertCourseName.bind("<Return>", self.addToDatabase)
+
+        self.insertBuildingName = tk.Entry(self.window, width=50)
+        self.insertBuildingName.grid(row=9, column=0, sticky=tk.W, pady=5)
+        self.insertBuildingName.insert(tk.END, "insert Building Name")
+        self.insertBuildingName.bind("<Return>", self.addToDatabase)
+
+        self.insertRoomName = tk.Entry(self.window, width=50)
+        self.insertRoomName.grid(row=10, column=0, sticky=tk.W, pady=5)
+        self.insertRoomName.insert(tk.END, "insert RoomName")
+        self.insertRoomName.bind("<Return>", self.addToDatabase)
+
+        self.insertRoomClassSize = tk.Entry(self.window, width=50)
+        self.insertRoomClassSize.grid(row=11, column=0, sticky=tk.W, pady=5)
+        self.insertRoomClassSize.insert(tk.END, "insert Room Class Size")
+        self.insertRoomClassSize.bind("<Return>", self.addToDatabase)
+
+        self.insertStartDate = tk.Entry(self.window, width=50)
+        self.insertStartDate.grid(row=12, column=0, sticky=tk.W, pady=5)
+        self.insertStartDate.insert(tk.END, "insert Start Date")
+        self.insertStartDate.bind("<Return>", self.addToDatabase)
+
+        self.insertEndDate = tk.Entry(self.window, width=50)
+        self.insertEndDate.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.insertEndDate.insert(tk.END, "insert End Date")
+        self.insertEndDate.bind("<Return>", self.addToDatabase)
+
+        self.insertTime = tk.Entry(self.window, width=50)
+        self.insertTime.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.insertTime.insert(tk.END, "insert Time")
+        self.insertTime.bind("<Return>", self.addToDatabase)
+
     ## function that create the entry fields for showAdminPowers()
-    def entrySection(self,event):
+    def createStudentsEntrySection(self,event):
 
         ##When the button is pressed, delete these buttons that are in the way
         ## Possible change soon
@@ -485,7 +605,7 @@ class RFIDDisplay:
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
 
         var = tk.IntVar()
-        self.isPofessorButton = tk.Radiobutton(self.window, text='Option 1', variable=var, value=1, command = self.goHome)
+        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1, command = self.goHome)
         self.isPofessorButton.grid(row=16, column=1, sticky=tk.W, pady=5)
         #self.isPofessorButton.bind("<Button>", self.addToDatabase)
 
@@ -566,6 +686,46 @@ class RFIDDisplay:
             pass
         try:
             self.signOutbutton.destroy()
+        except:
+            pass
+        try:
+            self.isPofessorButton.destroy()
+        except:
+            pass
+        try:
+            self.studentChosen.destroy()
+        except:
+            pass
+        try:
+            self.studentToDelete.destroy()
+        except:
+            pass
+        try:
+            self.insertCourseName.destroy()
+        except:
+            pass
+        try:
+            self.insertBuildingName.destroy()
+        except:
+            pass
+        try:
+            self.insertRoomName.destroy()
+        except:
+            pass
+        try:
+            self.insertRoomClassSize.destroy()
+        except:
+            pass
+        try:
+            self.insertStartDate.destroy()
+        except:
+            pass
+        try:
+            self.insertEndDate.destroy()
+        except:
+            pass
+        try:
+            self.insertTime.destroy()
         except:
             pass
 

@@ -258,8 +258,9 @@ class readFromDataBase:
         testTableName = "people"
         print("people table")
         print("------------------------------------")
-        for x in pointer.execute("SELECT * FROM people"):
-            print(x)
+        #for x in 
+        pointer.execute("SELECT * FROM people")
+        return (pointer.fetchall())
         print("------------------------------------")
         #for x in pointer.execute("SELECT * FROM (?)", ("people")):
         #    print(x)
