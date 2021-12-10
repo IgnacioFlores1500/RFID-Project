@@ -71,8 +71,8 @@ class RFIDDisplay:
         self.window = tk.Tk()
 
         ##program Dimenisons
-        windowWidgth = 700
-        windowHight = 500
+        windowWidgth = 1200
+        windowHight = 700
 
         ##screen dimension
         screenWidth = self.window.winfo_screenwidth()
@@ -591,19 +591,27 @@ class RFIDDisplay:
         self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
 
         self.insert_Record_Button = tk.Button(self.window, text="Update Users")
-        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.editToDataBase)
 
         var = tk.IntVar()
-        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1, command = self.goHome)
-        self.isPofessorButton.grid(row=17, column=1, sticky=tk.W, pady=5)
+        var.set(1)
+        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1,)
+        self.isPofessorButton.grid(row=16, column=0, sticky=tk.W, pady=5)
         #self.isPofessorButton.bind("<Button>", self.addToDatabase)
 
-        self.createHomeButton()
+        self.isPofessorButton2 = tk.Radiobutton(self.window, text='is not Professor?', variable=var, value=2)
+        self.isPofessorButton2.grid(row=16, column=1, sticky=tk.W, pady=5)
+
+        print(var)
+
+        self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
+        self.homeButton.grid(row=18,column=0,rowspan=2,sticky=tk.W)
+        self.homeButton.bind("<Button>", self.goHome)
     
     def createClassroomEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
-        self.createHomeButton()
+       
         self.insertCourseName = tk.Entry(self.window, width=50)
         self.insertCourseName.grid(row=8, column=0, sticky=tk.W, pady=5)
         self.insertCourseName.insert(tk.END, "insert Course Name")
@@ -638,6 +646,12 @@ class RFIDDisplay:
         self.insertTime.grid(row=14, column=0, sticky=tk.W, pady=5)
         self.insertTime.insert(tk.END, "insert Time")
         self.insertTime.bind("<Return>", self.addToDatabase)
+        
+        
+
+        self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
+        self.homeButton.grid(row=15,column=0,sticky=tk.W)
+        self.homeButton.bind("<Button>", self.goHome)
 
     ## function that create the entry fields for showAdminPowers()
     def createStudentsEntrySection(self,event):
@@ -663,42 +677,42 @@ class RFIDDisplay:
         ## self.classroom.bind("<Return>", self.create_class)
 
         self.firstNameEntry = ttk.Entry(self.window, width=50)
-        self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.firstNameEntry.grid(row=8, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.firstNameEntry.insert(tk.END, """Enter a "new Students" First Name""")
         self.firstNameEntry.bind("<Return>", self.addToDatabase)
 
         self.lastNameEntry = ttk.Entry(self.window, width=50)
-        self.lastNameEntry.grid(row=9, column=0, sticky=tk.W, pady=5)
+        self.lastNameEntry.grid(row=9, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.lastNameEntry.insert(tk.END, """Enter a "new Students" Last Name""")
         self.lastNameEntry.bind("<Return>", self.addToDatabase)
 
         self.suffixEntry = ttk.Entry(self.window, width=50)
-        self.suffixEntry.grid(row=10, column=0, sticky=tk.W, pady=5)
+        self.suffixEntry.grid(row=10, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.suffixEntry.insert(tk.END, """Enter a "new Students" Suffix""")
         self.suffixEntry.bind("<Return>", self.addToDatabase)
 
         self.AngeloIDEntry = ttk.Entry(self.window, width=50)
-        self.AngeloIDEntry.grid(row=11, column=0, sticky=tk.W, pady=5)
+        self.AngeloIDEntry.grid(row=11, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.AngeloIDEntry.insert(tk.END, """Enter a "new Students" Angelo ID """)
         self.AngeloIDEntry.bind("<Return>", self.addToDatabase)
 
         self.tagEntry = ttk.Entry(self.window, width=50)
-        self.tagEntry.grid(row=12, column=0, sticky=tk.W, pady=5)
+        self.tagEntry.grid(row=12, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.tagEntry.insert(tk.END, """Enter a "new Students" RFID tag""")
         self.tagEntry.bind("<Return>", self.addToDatabase)
 
         self.phoneEntry = ttk.Entry(self.window, width=50)
-        self.phoneEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
+        self.phoneEntry.grid(row=13, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.phoneEntry.insert(tk.END, """Enter a "new Students" phoneNumber""")
         self.phoneEntry.bind("<Return>", self.addToDatabase)
 
         self.emailEntry = ttk.Entry(self.window, width=50)
-        self.emailEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.emailEntry.grid(row=14, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
         self.emailEntry.bind("<Return>", self.addToDatabase)
     
         self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.grid(row=15, column=0,columnspan=2, sticky=tk.W, pady=5)
         self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
         self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
         
@@ -710,9 +724,12 @@ class RFIDDisplay:
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
 
         var = tk.IntVar()
-        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1, command = self.goHome)
+        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1)
         self.isPofessorButton.grid(row=16, column=1, sticky=tk.W, pady=5)
+        self.isPofessorButton.bind("")
         #self.isPofessorButton.bind("<Button>", self.addToDatabase)
+        self.isPofessorButton2 = tk.Radiobutton(self.window, text='is not Professor?', variable=var, value=2)
+        self.isPofessorButton2.grid(row=16, column=2, sticky=tk.W, pady=5)
 
         self.createHomeButton()
         
@@ -833,6 +850,10 @@ class RFIDDisplay:
             self.insertTime.destroy()
         except:
             pass
+        try:
+            self.isPofessorButton2.destroy()
+        except:
+            pass
 
         
     ##Creating the button for the signout after the good login
@@ -856,7 +877,7 @@ class RFIDDisplay:
     ##A function to create the Home Button
     def createHomeButton(self):
         self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
-        self.homeButton.grid(row=18,column=1,rowspan=2,columnspan=2,sticky=tk.W)
+        self.homeButton.grid(row=18,column=0,rowspan=2,columnspan=2,sticky=tk.W)
         self.homeButton.bind("<Button>", self.goHome)
 
     ##A function to bind the home button to to make it go to the home
