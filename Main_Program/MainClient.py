@@ -4,14 +4,7 @@ import dataBaseCode
 from Class import people
 from Class import courses
 from dataBaseCode import createTables
-# #from dataBaseCode import inputBasicInfoPeople
-# from dataBaseCode import readPeopleTable
-# from dataBaseCode import deleteBasicInfoPeople
-# from dataBaseCode import readProfTable
-# from dataBaseCode import returnsKeyIDPeopleTableFromRFIDTag
-# #from dataBaseCode import inputProfessor
-# from dataBaseCode import deleteProfessor
-# from dataBaseCode import returnsInfomationFromPeopleTableFromFirstName
+
 
 ## These are classes that are related to it's name. EX: inputDataBase involves all functions releated to inputing data into the DB. 
 from dataBaseCode import inputDataBase

@@ -34,16 +34,18 @@ from Class import people
 from dataBaseCode import inputDataBase
 ##Imports readFunctions that allows to use read the database using functions
 from dataBaseCode import readFromDataBase
+##Imports function to update to database
+from dataBaseCode import updateToDataBase
 
 
 
 
 ##comment if no RFID
 
-import RPi.GPIO as GPIO
-from mfrc522 import SimpleMFRC522
+# import RPi.GPIO as GPIO
+# from mfrc522 import SimpleMFRC522
 
-reader = SimpleMFRC522()
+#reader = SimpleMFRC522()
 
 TrueUser = False
 TruePassword = False
@@ -98,38 +100,39 @@ class RFIDDisplay:
         # self.canvas.columnconfigure(6, weight=1)
         # self.canvas.columnconfigure(0, weight=1)
 
-        self.RFIDENTRY()
+        self.create_widgets()
+        #self.RFIDENTRY()
         #self.welcomScreen()
     
     
 
 
-    def RFIDENTRY(self):
-        import time
+    # def RFIDENTRY(self):
+    #     import time
 
-        import RPi.GPIO as GPIO
-        from mfrc522 import SimpleMFRC522
+    #     import RPi.GPIO as GPIO
+    #     from mfrc522 import SimpleMFRC522
 
-        reader = SimpleMFRC522()
+    #     reader = SimpleMFRC522()
 
-        print("Scan Card")
-        try:
-            while True:
-                rfid = None
-                text = None
-                rfid, text = reader.read()
+    #     print("Scan Card")
+    #     try:
+    #         while True:
+    #             rfid = None
+    #             text = None
+    #             rfid, text = reader.read()
                 
-                if (returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag != None):
-                    self.entry(rfid)
-                    print(rfid)
-                    #print(rfid)
-                    GPIO.cleanup()
-                    break
-                time.sleep(2)
+    #             if (returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag != None):
+    #                 self.entry(rfid)
+    #                 print(rfid)
+    #                 #print(rfid)
+    #                 GPIO.cleanup()
+    #                 break
+    #             time.sleep(2)
 
-        finally:
-            print("TEST")
-            GPIO.cleanup()
+    #     finally:
+    #         print("TEST")
+    #         GPIO.cleanup()
 
 
 
@@ -274,9 +277,9 @@ class RFIDDisplay:
             self.display.delete(0, END)
         
         ##Deletes the login entries. Could possible change later after implementing the RFID scanner
-        # self.name_entry.destroy()
-        # self.password_entry.destroy()
-        # self.login_button.destroy()
+        self.name_entry.destroy()
+        self.password_entry.destroy()
+        self.login_button.destroy()
         ##un comment this if using creatwigets
 
 
@@ -478,6 +481,43 @@ class RFIDDisplay:
         #after this creation this is where it needs to delete from database
         #You can do this with a bind or just a button and get the value
 
+    def editToDataBase(self, event):
+
+        Goodata = 1
+
+        firstName = self.firstNameEntry.get()
+        lastName = self.lastNameEntry.get()
+        suffix = self.suffixEntry.get()
+        ASU_ID = self.AngeloIDEntry.get()
+        RFID = self.tagEntry.get()
+        email = self.emailEntry.get()
+        phone = self.phoneEntry.get()
+        housing = self.HousingStatusEntry.get()
+
+       
+        updateLocalRFID=RFID
+
+        ##First and last Name checks
+        if (len(firstName) > 26 or len(firstName) < 2 or len(lastName) > 26 or len(lastName) < 2):
+            messagebox.showerror(title = "Check Names Length", message = "Either  first name or last Name was either too short or long.")
+            Goodata += 1
+        if (self.stringCheckForNumers(firstName) or self.stringCheckForNumers(lastName)):
+            messagebox.showerror(title = "Number Fail",  message = "No numbers are allowed in either the first or last name fields.")
+            Goodata += 1
+        
+        ##checks Suffix for numbers
+        if (self.stringCheckForNumers(suffix)):
+             messagebox.showerror(title = "Suffix Fail", message = "No numbers are allowed in the suffix field.")
+             Goodata += 1
+
+        if (Goodata == 1):
+            temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,housing)
+
+            tempID = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(updateLocalRFID)
+            tempID = tempID[0]
+            updateToDataBase.updatePersonFromKeyId(tempID,temp_person)   
+
+
     def editStudentsEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
         dataBasePeople = []
@@ -498,6 +538,7 @@ class RFIDDisplay:
     def showPossibleStudentEdits(self, event):
         
         ##When the button is pressed, delete these buttons that are in the way
+        ##selectedStudent is the
         selectedStudent = self.studentChosen.get()
         self.destroyAllPossibleAdminFields_Buttons()
         studentData = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(selectedStudent)
@@ -505,41 +546,51 @@ class RFIDDisplay:
         self.firstNameEntry = ttk.Entry(self.window, width=50)
         self.firstNameEntry.grid(row=8, column=0, sticky=tk.W, pady=5)
         self.firstNameEntry.insert(tk.END, studentData[1])
-        self.firstNameEntry.bind("<Return>", self.addToDatabase)
+        self.firstNameEntry.bind("<Return>", self.editToDataBase)
 
         self.lastNameEntry = ttk.Entry(self.window, width=50)
         self.lastNameEntry.grid(row=9, column=0, sticky=tk.W, pady=5)
         self.lastNameEntry.insert(tk.END, studentData[2])
-        self.lastNameEntry.bind("<Return>", self.addToDatabase)
+        self.lastNameEntry.bind("<Return>", self.editToDataBase)
 
         self.suffixEntry = ttk.Entry(self.window, width=50)
         self.suffixEntry.grid(row=10, column=0, sticky=tk.W, pady=5)
         self.suffixEntry.insert(tk.END, studentData[3])
-        self.suffixEntry.bind("<Return>", self.addToDatabase)
+        self.suffixEntry.bind("<Return>", self.editToDataBase)
 
         self.AngeloIDEntry = ttk.Entry(self.window, width=50)
         self.AngeloIDEntry.grid(row=11, column=0, sticky=tk.W, pady=5)
         self.AngeloIDEntry.insert(tk.END, studentData[4])
-        self.AngeloIDEntry.bind("<Return>", self.addToDatabase)
+        self.AngeloIDEntry.bind("<Return>", self.editToDataBase)
 
         self.tagEntry = ttk.Entry(self.window, width=50)
         self.tagEntry.grid(row=12, column=0, sticky=tk.W, pady=5)
         self.tagEntry.insert(tk.END, studentData[5])
-        self.tagEntry.bind("<Return>", self.addToDatabase)
+        self.tagEntry.bind("<Return>", self.editToDataBase)
 
 
         self.emailEntry = ttk.Entry(self.window, width=50)
         self.emailEntry.grid(row=13, column=0, sticky=tk.W, pady=5)
         self.emailEntry.insert(tk.END, studentData[6])
-        self.emailEntry.bind("<Return>", self.addToDatabase)
+        self.emailEntry.bind("<Return>", self.editToDataBase)
 
-        self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
-        self.insert_Record_Button.grid(row=14, column=0, sticky=tk.W, pady=5)
-        self.insert_Record_Button.bind("<Button>", self.addToDatabase)
+        self.phoneEntry = ttk.Entry(self.window, width=50)
+        self.phoneEntry.grid(row=14, column=0, sticky=tk.W, pady=5)
+        self.phoneEntry.insert(tk.END, studentData[7])
+        self.phoneEntry.bind("<Return>", self.editToDataBase)
+
+        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.insert(tk.END,  studentData[8])
+        self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
+
+        self.insert_Record_Button = tk.Button(self.window, text="Update Users")
+        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.bind("<Button>", self.editToDataBase)
 
         var = tk.IntVar()
         self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1, command = self.goHome)
-        self.isPofessorButton.grid(row=14, column=1, sticky=tk.W, pady=5)
+        self.isPofessorButton.grid(row=17, column=1, sticky=tk.W, pady=5)
         #self.isPofessorButton.bind("<Button>", self.addToDatabase)
 
         self.createHomeButton()
@@ -819,7 +870,7 @@ class RFIDDisplay:
         #setting up when the user can enter a username
         self.name_entry = ttk.Entry(self.window, width=25)
         self.name_entry.grid(row=1, column=0, sticky=tk.W, pady=5,columnspan=5)
-        self.name_entry.insert(tk.END, "GoodBye")
+        self.name_entry.insert(tk.END, "Iggy")
         self.name_entry.bind("<Return>", self.validLogin)
         
         #setting up when the user can enter a password

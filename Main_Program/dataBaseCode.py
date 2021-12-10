@@ -248,6 +248,20 @@ class deleteFromDataBase:
         print("DELETE$D")
         con.commit()
         con.close()
+#############################################################################################################################################
+class updateToDataBase:
+
+    def updatePersonFromKeyId(keyID, person):
+        con = sqlite3.connect("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        #Cursor for the Database
+        pointer = con.cursor()
+
+        pointer.execute("UPDATE people SET FirstName = ?, LastName = ?, Suffix = ?, ASUID = ?, RFID = ?, Email = ?, PHONE = ?, CampusOFFCampus=?  where KeyID=(?)", (person.firstName,person.lastName, person.Suffix,person.ASUID,person.RFID, person.Email, person.Phone,person.CampusOFFCampus,keyID,))
+
+        print("Updated")
+        con.commit()
+        con.close()
 
 #############################################################################################################################################
 class readFromDataBase:
