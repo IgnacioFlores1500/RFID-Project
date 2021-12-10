@@ -26,6 +26,7 @@ from typing import Counter
 ##Allows the GUI to know when a login was made
 import time
 
+
 ##Imports a function from database file to return if a personID has edit_prilvages
 from dataBaseCode import returnFromDataBase
 ## imports the people class from Class.py to import data
@@ -36,6 +37,8 @@ from dataBaseCode import inputDataBase
 from dataBaseCode import readFromDataBase
 ##Imports function to update to database
 from dataBaseCode import updateToDataBase
+##import fucntion to delete from database
+from dataBaseCode import deleteFromDataBase
 
 
 
@@ -443,6 +446,7 @@ class RFIDDisplay:
         self.destroyAllPossibleAdminFields_Buttons()
 
         self.show_admin_buttons()
+        self.createHomeButton()
         
     def deleteStudentEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
@@ -457,9 +461,26 @@ class RFIDDisplay:
         deleteVar = tk.StringVar()
         self.studentToDelete = ttk.Combobox(self.window, width = 50, textvariable=deleteVar, values=peopleOptions)
         self.studentToDelete.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.studentToDelete.bind("<Return>", self.deletePerson)
         self.createHomeButton()
         #after this creation this is where it needs to delete from database
         #You can do this with a bind or just a button and get the value
+
+    def deletePerson(self,event):
+        ##Returns a name
+        selectedPerson = self.studentToDelete.get()
+        #print(selectedPerson)
+        #print("debug")
+        temp_info = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(selectedPerson)
+        #print(temp_info)
+        KID=temp_info[0]
+        #print(KID)
+        deleteFromDataBase.deleteBasicInfoPeople(KID)
+        
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.show_admin_powers()
+        
+
 
     def editToDataBase(self, event):
         temp_info = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(savedUserData)

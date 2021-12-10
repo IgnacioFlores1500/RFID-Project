@@ -263,6 +263,7 @@ class updateToDataBase:
         con.commit()
         con.close()
 
+
 #############################################################################################################################################
 class readFromDataBase:
     def readPeopleTable():
