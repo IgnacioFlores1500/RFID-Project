@@ -55,7 +55,7 @@ recentClassSize = 0
 seats = {}
 adminFields = {}
 CurrentLogin = ""
-savedUserData = None
+
 
 
 def main():
@@ -71,8 +71,8 @@ class RFIDDisplay:
         self.window = tk.Tk()
 
         ##program Dimenisons
-        windowWidgth = 1600
-        windowHight = 900
+        windowWidgth = 700
+        windowHight = 500
 
         ##screen dimension
         screenWidth = self.window.winfo_screenwidth()
@@ -516,7 +516,7 @@ class RFIDDisplay:
         if (Goodata == 1):
             temp_person = people(firstName,lastName,suffix,ASU_ID,RFID,email,phone,housing)
 
-            tempID = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(updateLocalRFID)
+            tempID = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(RFIDLocal)
             tempID = tempID[0]
             updateToDataBase.updatePersonFromKeyId(tempID,temp_person)   
 
@@ -544,6 +544,7 @@ class RFIDDisplay:
         ##When the button is pressed, delete these buttons that are in the way
         ##selectedStudent is the
         selectedStudent = self.studentChosen.get()
+        global savedUserData
         savedUserData = selectedStudent
         self.destroyAllPossibleAdminFields_Buttons()
         studentData = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(selectedStudent)
