@@ -58,6 +58,8 @@ recentClassSize = 0
 seats = {}
 adminFields = {}
 CurrentLogin = ""
+professorSelected = False
+studentSelected = False
 
 
 
@@ -583,29 +585,25 @@ class RFIDDisplay:
         self.phoneEntry.insert(tk.END, studentData[7])
         self.phoneEntry.bind("<Return>", self.editToDataBase)
 
-        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
-        self.HousingStatusEntry.insert(tk.END,  studentData[8])
-        self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
+        var = tk.StringVar()
+        Options = ["Professor", "User"]
+        self.isProfessorEdit = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
+        self.isProfessorEdit.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.isProfessorEdit.bind("<Return>", self.setUserPriveleges) 
 
         self.insert_Record_Button = tk.Button(self.window, text="Update Users")
         self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.editToDataBase)
-
-        var = tk.IntVar()
-        var.set(1)
-        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1,)
-        self.isPofessorButton.grid(row=16, column=0, sticky=tk.W, pady=5)
-        #self.isPofessorButton.bind("<Button>", self.addToDatabase)
-
-        self.isPofessorButton2 = tk.Radiobutton(self.window, text='is not Professor?', variable=var, value=2)
-        self.isPofessorButton2.grid(row=16, column=1, sticky=tk.W, pady=5)
-
-        print(var)
-
+ 
         self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
         self.homeButton.grid(row=18,column=0,rowspan=2,sticky=tk.W)
         self.homeButton.bind("<Button>", self.goHome)
+    
+    def setProfessor():
+        print("hello")
+
+    def setStudent():
+        print("hello again")
     
     def createClassroomEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
@@ -709,10 +707,11 @@ class RFIDDisplay:
         self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
         self.emailEntry.bind("<Return>", self.addToDatabase)
     
-        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=15, column=0,columnspan=2, sticky=tk.W, pady=5)
-        self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
-        self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
+        var = tk.StringVar()
+        Options = ["Professor", "User"]
+        self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
+        self.isProfessor.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.isProfessor.bind("<Return>", self.setUserPriveleges)  
         
         ##Update button, I just wanted a GUI way approach to adding People to the Database
         ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
@@ -721,15 +720,10 @@ class RFIDDisplay:
         self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
 
-        var = tk.IntVar()
-        self.isPofessorButton = tk.Radiobutton(self.window, text='is Professor?', variable=var, value=1)
-        self.isPofessorButton.grid(row=16, column=1, sticky=tk.W, pady=5)
-        self.isPofessorButton.bind("")
-        #self.isPofessorButton.bind("<Button>", self.addToDatabase)
-        self.isPofessorButton2 = tk.Radiobutton(self.window, text='is not Professor?', variable=var, value=2)
-        self.isPofessorButton2.grid(row=16, column=2, sticky=tk.W, pady=5)
+        self.createHomeButton()  
 
-        self.createHomeButton()       
+    def setUserPriveleges(self, event):
+        print()
 
     def destroyAllPossibleAdminFields_Buttons(self):
         try:
@@ -805,7 +799,7 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.isPofessorButton.destroy()
+            self.isProfessorButton.destroy()
         except:
             pass
         try:
@@ -845,7 +839,11 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.isPofessorButton2.destroy()
+            self.isProfessorEdit.destroy()
+        except:
+            pass
+        try:
+            self.isProfessor.destroy()
         except:
             pass
         try:
