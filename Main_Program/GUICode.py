@@ -585,23 +585,29 @@ class RFIDDisplay:
         self.phoneEntry.insert(tk.END, studentData[7])
         self.phoneEntry.bind("<Return>", self.editToDataBase)
 
+        var2 = tk.StringVar()
+        Options = ["COVID", "No COVID"]
+        self.hasCovid = ttk.Combobox(self.window, width = 50, textvariable=var2, values=Options)
+        self.hasCovid.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.hasCovid.bind("<Return>", self.setUserPriveleges) 
+
         self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.HousingStatusEntry.insert(tk.END,  studentData[8])
         self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
 
         var = tk.StringVar()
         Options = ["Professor", "User"]
         self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
-        self.isProfessor.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.isProfessor.grid(row=17, column=0, sticky=tk.W, pady=5)
         self.isProfessor.bind("<Return>", self.setUserPriveleges) 
 
         self.insert_Record_Button = tk.Button(self.window, text="Update Users")
-        self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.grid(row=18, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.editToDataBase)
  
         self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
-        self.homeButton.grid(row=18,column=0,rowspan=2,sticky=tk.W)
+        self.homeButton.grid(row=19,column=0,rowspan=2,sticky=tk.W)
         self.homeButton.bind("<Button>", self.goHome)
     
     def setProfessor():
@@ -854,6 +860,10 @@ class RFIDDisplay:
             pass
         try:
             self.isProfessor.destroy()
+        except:
+            pass
+        try:
+            self.hasCovid.destroy()
         except:
             pass
         try:
