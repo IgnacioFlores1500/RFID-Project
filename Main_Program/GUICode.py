@@ -351,8 +351,9 @@ class RFIDDisplay:
         self.studentPick.bind("<Return>", self.updateCovidStatus)
         self.createHomeButton()
 
+        studentVar2 =tk.StringVar()
         Options = ["NoCovid", "Covid"]
-        self.covidStatus = ttk.Combobox(self.window, width = 50, textvariable=studentVar, values=Options)
+        self.covidStatus = ttk.Combobox(self.window, width = 50, textvariable=studentVar2, values=Options)
         self.covidStatus.grid(row=9, column=0, sticky=tk.W, pady=5)
         self.covidStatus.bind("<Return>", self.updateCovidStatus)
         self.createHomeButton()
@@ -360,6 +361,11 @@ class RFIDDisplay:
     def updateCovidStatus(self,event):
         studentName =  self.studentPick.get()
         studentStatus = self.covidStatus.get()
+
+        peopleTable = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(studentName)
+        keyId = peopleTable[0]
+
+        updateToDataBase.updateStudentTableCovidStatus(keyId,studentStatus)
 
     ##Creats the Entry for the classroom after the button is clicked
     def createClassEntry(self, event):
@@ -412,6 +418,8 @@ class RFIDDisplay:
                     print(name)
                     print("debug")
                     health = returnFromDataBase.checkSeatHealth(i, j, courseName)
+                    print(health)
+                    print("debug")
                     if (health == "NoCovid"):
                         b = ttk.Label(self.window, text=name, background="light green")
                         b.grid(row=i+3, column=j+3, pady=200 / course, padx=200 / course)
@@ -970,7 +978,7 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.isProfessorButton2.destroy()
+            self.covidStatus.destroy()
         except:
             pass
         try:

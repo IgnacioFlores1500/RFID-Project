@@ -260,13 +260,13 @@ class updateToDataBase:
         con.commit()
         con.close()
 
-    def updateStudentTableStatus(keyID, person):
+    def updateStudentTableCovidStatus(keyID, status):
         con = sqlite3.connect("Database.db")
         con.execute("PRAGMA foreign_keys = ON")
         #Cursor for the Database
         pointer = con.cursor()
 
-        pointer.execute("UPDATE people SET FirstName = ?, LastName = ?, Suffix = ?, ASUID = ?, RFID = ?, Email = ?, PHONE = ?, CampusOFFCampus=?  where KeyID=(?)", (person.firstName,person.lastName, person.Suffix,person.ASUID,person.RFID, person.Email, person.Phone,person.CampusOFFCampus,keyID,))
+        pointer.execute("UPDATE students SET COVID_Status=(?) WHERE ContactID=(?)", (status, keyID))
 
         print("Updated")
         con.commit()
