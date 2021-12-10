@@ -585,11 +585,16 @@ class RFIDDisplay:
         self.phoneEntry.insert(tk.END, studentData[7])
         self.phoneEntry.bind("<Return>", self.editToDataBase)
 
+        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.insert(tk.END,  studentData[8])
+        self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
+
         var = tk.StringVar()
         Options = ["Professor", "User"]
-        self.isProfessorEdit = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
-        self.isProfessorEdit.grid(row=15, column=0, sticky=tk.W, pady=5)
-        self.isProfessorEdit.bind("<Return>", self.setUserPriveleges) 
+        self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
+        self.isProfessor.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.isProfessor.bind("<Return>", self.setUserPriveleges) 
 
         self.insert_Record_Button = tk.Button(self.window, text="Update Users")
         self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
@@ -707,17 +712,22 @@ class RFIDDisplay:
         self.emailEntry.insert(tk.END, """Enter a "new Students" email""")
         self.emailEntry.bind("<Return>", self.addToDatabase)
     
+        self.HousingStatusEntry = ttk.Entry(self.window, width=50)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.insert(tk.END, """Enter a "new Students" Housing Situation""")
+        self.HousingStatusEntry.bind("<Return>", self.addToDatabase)    
+
         var = tk.StringVar()
         Options = ["Professor", "User"]
         self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
-        self.isProfessor.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.isProfessor.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.isProfessor.bind("<Return>", self.setUserPriveleges)  
         
         ##Update button, I just wanted a GUI way approach to adding People to the Database
         ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
         #fixed button, moved button to admin powers. figured it would make it appear and disappear correctly
         self.insert_Record_Button = tk.Button(self.window, text="Insert Users")
-        self.insert_Record_Button.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.addToDatabase)
 
         self.createHomeButton()  
@@ -839,7 +849,7 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.isProfessorEdit.destroy()
+            self.isProfessorButton2.destroy()
         except:
             pass
         try:
