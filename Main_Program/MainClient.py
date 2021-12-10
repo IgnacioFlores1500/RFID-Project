@@ -24,8 +24,8 @@ def testCode():
     createTables()
 
     ##read from database
-    x = readFromDataBase.readPeopleTable()
-    print(x)
+    # x = readFromDataBase.readPeopleTable()
+    # print(x)
     ##Nice hello Statment : )
     print("hello")
 
@@ -39,8 +39,8 @@ def testCode():
     
     ## Shows example of how to return a certain per son from the database from RFID
     ##returns none if there is noneone witht htat RFID
-    x = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(770351046990)
-    print (x)
+    # x = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(770351046990)
+    # print (x)
 
 
     #courseExample = courses("SoftWare Engi", "MCS", 115, 25, 12522, 50522, 900)
@@ -61,7 +61,7 @@ def testCode():
     seatY = 3
     #inputDataBase.inputActiveCourse(seatX,seatY)
 
-    ##print(returnFromDataBase.checkSeat(1, 3,1))
+    returnFromDataBase.checkSeat(1, 3,1)
     
 
     ##Read Tables 
@@ -71,7 +71,7 @@ def testCode():
 
     #readFromDataBase.readCourseTable()
     
-    #readFromDataBase.readStudentTable()
+    readFromDataBase.readStudentTable()
 
     readFromDataBase.readActiveCourseTable()
     ##seat(i=1, j=3, courseID 1)
