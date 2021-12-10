@@ -55,6 +55,7 @@ recentClassSize = 0
 seats = {}
 adminFields = {}
 CurrentLogin = ""
+savedUserData = None
 
 
 def main():
@@ -482,7 +483,9 @@ class RFIDDisplay:
         #You can do this with a bind or just a button and get the value
 
     def editToDataBase(self, event):
-
+        temp_info = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(savedUserData)
+        RFIDLocal = temp_info[5]
+        
         Goodata = 1
 
         firstName = self.firstNameEntry.get()
@@ -523,6 +526,7 @@ class RFIDDisplay:
         dataBasePeople = []
         dataBasePeople = readFromDataBase.readPeopleTable()
         peopleOptions = []
+        
 
         peopleOptionsCt = 0
         for i in dataBasePeople:
@@ -540,6 +544,7 @@ class RFIDDisplay:
         ##When the button is pressed, delete these buttons that are in the way
         ##selectedStudent is the
         selectedStudent = self.studentChosen.get()
+        savedUserData = selectedStudent
         self.destroyAllPossibleAdminFields_Buttons()
         studentData = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(selectedStudent)
         print("Start \n\n", studentData, "End \n\n")
