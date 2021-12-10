@@ -105,8 +105,6 @@ class RFIDDisplay:
         #self.RFIDENTRY()
         #self.welcomScreen()
     
-    
-
 
     # def RFIDENTRY(self):
     #     import time
@@ -198,8 +196,6 @@ class RFIDDisplay:
             self.create_widgets()
             return False
 
-
-
     #validPassword takes what the user entered into the passwd box and sees if the password 
     #and username match the ones in the data base #if the valid long in is false, delete all of admin
     def validLogin (self, event):
@@ -267,10 +263,7 @@ class RFIDDisplay:
             epochSeconds = time.time()
             localTime = time.ctime(epochSeconds)
             self.loginTime = ttk.Label(self.window, text = "Session started " + localTime, font=3)
-            self.loginTime.grid(row=3, column=0,sticky=tk.W, columnspan=5)
-
-        
-       
+            self.loginTime.grid(row=3, column=0,sticky=tk.W, columnspan=5) 
             
     #show admin powers is to enable the ability to change a class and or roster
     def show_admin_powers(self):
@@ -294,40 +287,37 @@ class RFIDDisplay:
         #self.entrySection()
         #self.create_widgets()
 
-    
-
     ##This function creates the button used for the admin status. 
     def show_admin_buttons(self):
         ##Input person Button
-        self.entryButtonSection = tk.Button(self.window,width=13, text = "Create person")
+        self.entryButtonSection = tk.Button(self.window,width=20, text = "Create person")
         self.entryButtonSection.grid(row=8, column=0,sticky=tk.W, pady=5)
         self.entryButtonSection.bind("<Button>", self.createStudentsEntrySection)
 
         ##Create Classroom button
-        self.createClassRoom = tk.Button(self.window,width=13, text = "Create Classroom")
+        self.createClassRoom = tk.Button(self.window,width=20, text = "Create Classroom")
         self.createClassRoom.grid(row=8, column=1,sticky=tk.W, pady=5)
         self.createClassRoom.bind("<Button>", self.createClassroomEntrySection)
 
-        self.debugButton = tk.Button(self.window, width=13, text = "DEBUG",state=tk.DISABLED)
-        self.debugButton.grid(row=8, column=2,sticky=tk.W, pady=5)
-        ##self.tempButton2.bind("<Button>", self.entrySection)
+        self.showClass = tk.Button(self.window, width=20, text = "Show Classroom")
+        self.showClass.grid(row=8, column=2,sticky=tk.W, pady=5)
+        self.showClass.bind("<Button>", self.createClassEntry)
 
-        self.editPersonButton = tk.Button(self.window,width=13, text = "Edit person")
+        self.editPersonButton = tk.Button(self.window,width=20, text = "Edit person")
         self.editPersonButton.grid(row=9, column=0,sticky=tk.W, pady=5)
         self.editPersonButton.bind("<Button>", self.editStudentsEntrySection)
 
-        self.editClassroomButton = tk.Button(self.window,width=13, text = "Edit Classroom")
+        self.editClassroomButton = tk.Button(self.window,width=20, text = "Edit Classroom")
         self.editClassroomButton.grid(row=9, column=1,sticky=tk.W, pady=5)
         self.editClassroomButton.bind("<Button>", self.createClassEntry)
 
-        self.deletePersonButton = tk.Button(self.window,width=13, text = "Delete person")
+        self.deletePersonButton = tk.Button(self.window,width=20, text = "Delete person")
         self.deletePersonButton.grid(row=9, column=2,sticky=tk.W, pady=5)
         self.deletePersonButton.bind("<Button>", self.deleteStudentEntrySection)
         try:
             self.homeButton.destroy()
         except:
             pass
-
 
     ##Creats the Entry for the classroom after the button is clicked
     def createClassEntry(self, event):
@@ -341,7 +331,6 @@ class RFIDDisplay:
 
         self.createHomeButton()  
     
-
     #Create class is meant to make the classroom on the UI by making empty seats.
     def create_class(self, event):
         global seats
@@ -485,7 +474,7 @@ class RFIDDisplay:
     def editToDataBase(self, event):
         temp_info = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(savedUserData)
         RFIDLocal = temp_info[5]
-        
+
         Goodata = 1
 
         firstName = self.firstNameEntry.get()
@@ -520,7 +509,6 @@ class RFIDDisplay:
             tempID = tempID[0]
             updateToDataBase.updatePersonFromKeyId(tempID,temp_person)   
 
-
     def editStudentsEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
         dataBasePeople = []
@@ -538,7 +526,6 @@ class RFIDDisplay:
         self.studentChosen.bind("<Return>", self.showPossibleStudentEdits)
         self.createHomeButton()
     
-
     def showPossibleStudentEdits(self, event):
         
         ##When the button is pressed, delete these buttons that are in the way
@@ -731,11 +718,7 @@ class RFIDDisplay:
         self.isPofessorButton2 = tk.Radiobutton(self.window, text='is not Professor?', variable=var, value=2)
         self.isPofessorButton2.grid(row=16, column=2, sticky=tk.W, pady=5)
 
-        self.createHomeButton()
-        
-
-    ##This method should destroy ALL possible fields that are on the left side of the screen
-    ## entry fields, buttons, ect, EVERYTHING
+        self.createHomeButton()       
 
     def destroyAllPossibleAdminFields_Buttons(self):
         try:
@@ -747,7 +730,7 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.debugButton.destroy()
+            self.showClass.destroy()
         except:
             pass
         try:
@@ -855,7 +838,6 @@ class RFIDDisplay:
         except:
             pass
 
-        
     ##Creating the button for the signout after the good login
     def SignOutButton(self):
         self.signOutbutton = tk.Button(self.window, text="Sign Out",width=12,height=5)
@@ -864,7 +846,6 @@ class RFIDDisplay:
 
         self.signOutbutton.bind("<Button>", self.signOutFunction)
     
-
     ##creates the function after pressing said signoutButton
     def signOutFunction(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
@@ -926,7 +907,6 @@ class RFIDDisplay:
         
         #The Following code is for the display of seats. The seats are represented by brackets and can be empty
     
-######################################################################################################################################################
     ##Small fucntion to check for numbers in a string
     def stringCheckForNumers(self,string):
         return any(character.isdigit() for character in string)
