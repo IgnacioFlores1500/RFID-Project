@@ -97,9 +97,14 @@ class RFIDDisplay:
 
     def welcomScreen(self):
         #self.window.grid_columnconfigure()
-        self.RFIMessage = ttk.Label(self.window, text="Please scan your RFID", font=("Arial",20))
+        self.RFIMessage = ttk.Label(self.window, text="Please scan your RFID", font=("Arial",40))
         #self.RFIMessage.config(anchor=CENTER)
-        self.RFIMessage.grid(column=0,columnspan=10, row=9, sticky="es" )
+        self.RFIMessage.grid(column=0, row=0)
+        self.window.grid_columnconfigure(0,weight=1)
+        self.window.grid_rowconfigure(0,weight=1)
+
+        
+        
         
         ##self.RFIMessage.bind("<Return>", self.create_widgets)
         ##self.canvas.columnconfigure(6, weight=1)
