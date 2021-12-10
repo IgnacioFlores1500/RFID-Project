@@ -72,7 +72,7 @@ class RFIDDisplay:
 
         ##program Dimenisons
         windowWidgth = 1200
-        windowHight = 700
+        windowHight = 750
 
         ##screen dimension
         screenWidth = self.window.winfo_screenwidth()
@@ -356,27 +356,17 @@ class RFIDDisplay:
             #for j in range(2, RecentClassSize + 2):
                 #self.b = ttk.Label(self.window, text="")
                 #self.b.grid(row=i, column=j, pady=5)
+        #print(course)
         for i in range(course):
             for j in range(5, course + 5):
-                b = ttk.Label(self.window, text=returnFromDataBase.checkSeat(i, j, course) + returnFromDataBase.checkSeatHealth(i, j, course))
-                b.grid(row=i, column=j, pady=5)
+                #b = ttk.Label(self.window, text=returnFromDataBase.checkSeat(i, j, course) + returnFromDataBase.checkSeatHealth(i, j, course))
+                b = ttk.Label(self.window, text="[Seat]")
+                b.grid(row=i, column=j, pady=200 / course, padx=200 / course)
                 seats[(i, j + 5)] = b
+                
         
         recentClassSize = course
         
-
-        ##destroys the entry field
-        self.destroyAllPossibleAdminFields_Buttons()
-        self.classroom.destroy()
-
-        ##Copy from create_widgets Function. This is a crappy fix to fix 
-        ## A bug when creating classrooms
-        self.title = ttk.Label(self.window, text="RFID COVID-19 Tracker")
-        self.title.config(anchor=CENTER)
-        self.title.grid(row=0, column=0,columnspan=5)
-       
-        ##Replaces the fields location witht the admin buttons
-        self.show_admin_buttons()
 
     #this function is connected to the update database button specifically for 
     #the time being
@@ -835,6 +825,16 @@ class RFIDDisplay:
             pass
         try:
             self.isPofessorButton2.destroy()
+        except:
+            pass
+        try:
+            if recentClassSize != 0:
+                for i in range(recentClassSize):
+                    for j in range(5, recentClassSize + 5):
+                        try:
+                            seats[(i, j + 5)].destroy()
+                        except:
+                            pass
         except:
             pass
 
