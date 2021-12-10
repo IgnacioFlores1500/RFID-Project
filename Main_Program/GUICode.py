@@ -13,12 +13,12 @@
 # To use the "generic" widgets
 import tkinter as tk
 # To use the stylized, "look-and-feel" widgets
-from tkinter import ttk
+from tkinter import Entry, ttk
 # To display any error or warnings for mistakes, and to make sure the user wants to enter the info
 from tkinter import messagebox
 # sublibrary to ask for any info the program needs from the user 
 from tkinter import simpledialog
-from tkinter.constants import CENTER, DISABLED, END
+from tkinter.constants import BEVEL, CENTER, DISABLED, END
 from typing import Counter
 # sublibrary to 
 
@@ -35,6 +35,15 @@ from dataBaseCode import inputDataBase
 ##Imports readFunctions that allows to use read the database using functions
 from dataBaseCode import readFromDataBase
 
+
+
+
+##comment if no RFID
+
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
+reader = SimpleMFRC522()
 
 TrueUser = False
 TruePassword = False
@@ -89,22 +98,59 @@ class RFIDDisplay:
         # self.canvas.columnconfigure(6, weight=1)
         # self.canvas.columnconfigure(0, weight=1)
 
-        self.create_widgets()
+        self.RFIDENTRY()
         #self.welcomScreen()
     
     
 
 
-    def welcomScreen(self):
-        #self.window.grid_columnconfigure()
-        self.RFIMessage = ttk.Label(self.window, text="Please scan your RFID", font=("Arial",40))
-        #self.RFIMessage.config(anchor=CENTER)
-        self.RFIMessage.grid(column=0, row=0)
-        self.window.grid_columnconfigure(0,weight=1)
-        self.window.grid_rowconfigure(0,weight=1)
+    def RFIDENTRY(self):
+        import time
+
+        import RPi.GPIO as GPIO
+        from mfrc522 import SimpleMFRC522
+
+        reader = SimpleMFRC522()
+
+        print("Scan Card")
+        try:
+            while True:
+                rfid = None
+                text = None
+                rfid, text = reader.read()
+                
+                if (returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag != None):
+                    self.entry(rfid)
+                    print(rfid)
+                    #print(rfid)
+                    GPIO.cleanup()
+                    break
+                time.sleep(2)
+
+        finally:
+            print("TEST")
+            GPIO.cleanup()
+
+
 
         
-        
+    def entry(self,rfid):
+        temptumble1 = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(rfid)
+        keyid = temptumble1[0]
+        tempTumble = returnFromDataBase.returnsFirstNameFromKeyID(keyid)
+        #print(tempTumble)
+        #print("DEBUYG")
+        user = tempTumble[0]
+        print(user)
+        TrueUser = True
+        TruePassword = True
+        self.show_admin_powers()
+        self.recentUser = ttk.Label(self.window, text =  "Current User: " + user, font=3)
+        self.recentUser.grid(row=2, column=0,sticky=tk.W, columnspan=5)
+        epochSeconds = time.time()
+        localTime = time.ctime(epochSeconds)
+        self.loginTime = ttk.Label(self.window, text = "Session started " + localTime, font=3)
+        self.loginTime.grid(row=3, column=0,sticky=tk.W, columnspan=5)
         
         ##self.RFIMessage.bind("<Return>", self.create_widgets)
         ##self.canvas.columnconfigure(6, weight=1)
@@ -228,9 +274,11 @@ class RFIDDisplay:
             self.display.delete(0, END)
         
         ##Deletes the login entries. Could possible change later after implementing the RFID scanner
-        self.name_entry.destroy()
-        self.password_entry.destroy()
-        self.login_button.destroy()
+        # self.name_entry.destroy()
+        # self.password_entry.destroy()
+        # self.login_button.destroy()
+        ##un comment this if using creatwigets
+
 
         ##show_admin_button shows the buttons that allows professor to edit and add classrooms/students/professors, ect
         ##SignoutButton, is created to allow the professor to signout of their session. This might be a way to allow students to once again sign-in

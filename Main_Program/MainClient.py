@@ -31,8 +31,8 @@ def testCode():
     createTables()
 
     ##read from database
-    readFromDataBase.readPeopleTable()
-
+    x = readFromDataBase.readPeopleTable()
+    print(x)
     ##Nice hello Statment : )
     print("hello")
 
@@ -41,13 +41,13 @@ def testCode():
     #inputDataBase.inputBasicInfoPeople(testInputName1)
     #testInputName2 = people("JP", "Powers", "None",999_998, 12313219999,"JP@gmail.com", 121_101_2222, "OFF_Campus")
     #inputDataBase.inputBasicInfoPeople(testInputName2)
-    #testInputName3 = people("Dodgdu", "Erodgon", "Ph.D",999_997, "AA:AA:EE:EE","ERROR@gmail.com", 111_101_3333, "OFF_Campus")
+    #testInputName3 = people("Dodgdu", "Erodgon", "Ph.D",999_997,770_351_046_990,"ERROR@gmail.com", 111_101_3333, "OFF_Campus")
     #inputDataBase.inputBasicInfoPeople(testInputName3)
     
     ## Shows example of how to return a certain per son from the database from RFID
     ##returns none if there is noneone witht htat RFID
-    #x = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(12313219999)
-    #print (x)
+    x = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(770351046990)
+    print (x)
 
 
     #courseExample = courses("SoftWare Engi", "MCS", 115, 25, 12522, 50522, 900)
@@ -82,9 +82,9 @@ def testCode():
 
     readFromDataBase.readActiveCourseTable()
     ##seat(i=1, j=3, courseID 1)
-    print(returnFromDataBase.checkSeat(1, 3,1))
-    print(returnFromDataBase.checkSeatHealth(1, 3,1))
-    print(readFromDataBase.readActiveCourseTable())
+    # print(returnFromDataBase.checkSeat(1, 3,1))
+    # print(returnFromDataBase.checkSeatHealth(1, 3,1))
+    # print(readFromDataBase.readActiveCourseTable())
     ##Ignore this part of the demo
     # firstName = "Bob"
     # x = returnsInfomationFromPeopleTableFromFirstName(firstName)
@@ -98,9 +98,9 @@ def testCode():
 
     ##JP's GUI main Code
     ##creating program
-    #program = RFIDDisplay()
+    program = RFIDDisplay()
     ##starting event loop
-    #program.window.mainloop()
+    program.window.mainloop()
 
 def main():
     ## testCode is just the temp function to test datavbase or GUI code
