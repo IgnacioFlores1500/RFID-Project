@@ -103,7 +103,7 @@ class inputDataBase:
         con.commit()
         con.close()
 
-    def inputProfessor():
+    def inputProfessor(studentID):
         con = sqlite3.connect("Database.db")
         con.execute("PRAGMA foreign_keys = ON")
         #Cursor for the Database
@@ -117,11 +117,9 @@ class inputDataBase:
         temp_Edit_Priv = None
         temp2_Edit_Priv = None
 
-        ##Fix this shit code later - 11-6-2021
-        while (temp_Edit_Priv == None):
-            readFromDataBase.readPeopleTable()
-            temp_ContactID = input("Insert People ID ")
-            temp_Edit_Priv = input("Do you want this Professor to have edit powers? (Yes or No) ")
+        
+        
+        temp_Edit_Priv = "Yes"
             
         #1 = admin, 0 = normal
         if (temp_Edit_Priv == 'Yes'):
@@ -133,7 +131,7 @@ class inputDataBase:
 
 
         try: 
-            pointer.execute("INSERT INTO professors VALUES(NULL,?,?)", (temp_ContactID,temp2_Edit_Priv))
+            pointer.execute("INSERT INTO professors VALUES(NULL,?,?)", (studentID,temp_Edit_Priv))
             print("INPUTED")
         except sqlite3.IntegrityError:
             print("Contact_ID Doesn't exist")
@@ -142,7 +140,7 @@ class inputDataBase:
         con.commit()
         con.close()
     
-    def inputStudent():
+    def inputStudent(keyID):
         con = sqlite3.connect("Database.db")
         con.execute("PRAGMA foreign_keys = ON")
         #Cursor for the Database
@@ -151,12 +149,11 @@ class inputDataBase:
         temp_contactID = None
         temp_covid = None
 
-        while (temp_contactID == None):
-            readFromDataBase.readPeopleTable()
-            temp_contactID = input("Input contact ID")
-        while (temp_covid == None):
-            temp_covid = input("\"Covid\" or \"NoCovid\"")
+      
+        temp_contactID =keyID
         
+        #temp_covid = input("\"Covid\" or \"NoCovid\"")
+        temp_covid = "NoCovid"
         try: 
             pointer.execute("INSERT INTO students VALUES(Null, ?,?)", (temp_contactID, temp_covid))
             print("Inputed")
@@ -167,23 +164,23 @@ class inputDataBase:
         con.close()
         
 
-    def inputCourse(course):
+    def inputCourse(course,professorID):
         con = sqlite3.connect("Database.db")
         con.execute("PRAGMA foreign_keys = ON")
         #Cursor for the Database
         pointer = con.cursor()
 
-        temp_ProfessorID = None
+        #temp_ProfessorID = None
 
 
        
-        while (temp_ProfessorID == None):
-            readFromDataBase.readProfTable()
-            print("Note, 1st Number is ProfID, 2nd Number is ContactID, 3rd Number is EditPrivileges")
-            temp_ProfessorID = input("Insert perfessor ID ")
+        #while (temp_ProfessorID == None):
+            #readFromDataBase.readProfTable()
+            #print("Note, 1st Number is ProfID, 2nd Number is ContactID, 3rd Number is EditPrivileges")
+            #temp_ProfessorID = input("Insert perfessor ID ")
             ##temp_Edit_Priv = input("Do you want this Professor to have edit powers? (Yes or No) ")
             
-        
+        temp_ProfessorID = professorID
 
         try: 
             pointer.execute("INSERT INTO courses VALUES(Null,?,?,?,?,?,?,?,?)", (course.courseName,course.buildingName,course.roomNumber,course.roomClassSize,temp_ProfessorID,course.startDate,course.endDate,course.time))
@@ -263,6 +260,18 @@ class updateToDataBase:
         con.commit()
         con.close()
 
+    def updateStudentTableStatus(keyID, person):
+        con = sqlite3.connect("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        #Cursor for the Database
+        pointer = con.cursor()
+
+        pointer.execute("UPDATE people SET FirstName = ?, LastName = ?, Suffix = ?, ASUID = ?, RFID = ?, Email = ?, PHONE = ?, CampusOFFCampus=?  where KeyID=(?)", (person.firstName,person.lastName, person.Suffix,person.ASUID,person.RFID, person.Email, person.Phone,person.CampusOFFCampus,keyID,))
+
+        print("Updated")
+        con.commit()
+        con.close()    
+
 
 #############################################################################################################################################
 class readFromDataBase:
@@ -274,11 +283,11 @@ class readFromDataBase:
         print("people table")
         print("------------------------------------")
         #for x in 
-        pointer.execute("SELECT * FROM people")
-        return (pointer.fetchall())
+        #pointer.execute("SELECT * FROM people")
+        #return (pointer.fetchall())
         print("------------------------------------")
-        #for x in pointer.execute("SELECT * FROM (?)", ("people")):
-        #    print(x)
+        for x in pointer.execute("SELECT * FROM people"):
+            print(x)
 
         con.commit()
         con.close()
@@ -377,7 +386,49 @@ class returnFromDataBase:
 
         con.commit()
         con.close()
+
+    def returnsProfIDFromKeyID(KeyID):
+        con = sqlite3.connect ("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        pointer = con.cursor()
+
+        pointer.execute("SELECT ProfID FROM professors WHERE ContactID=(?)", (KeyID,))
+        return(pointer.fetchone())
+
+    def returnProfTable():
+        con = sqlite3.connect ("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        pointer = con.cursor()
+        #testTableName = "people"
+        
+        
+        pointer.execute("SELECT * FROM professors")
+        return (pointer.fetchall())
+        
+        #for x in pointer.execute("SELECT * FROM (?)", ("people")):
+        #    print(x)
+
+        con.commit()
+        con.close()     
     
+    def returnPeopleTable():
+        con = sqlite3.connect ("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        pointer = con.cursor()
+
+        pointer.execute("SELECT * FROM people")
+        return (pointer.fetchall())
+    
+    def returnStudentTable():
+        con = sqlite3.connect ("Database.db")
+        con.execute("PRAGMA foreign_keys = ON")
+        pointer = con.cursor()
+
+        pointer.execute("SELECT * FROM students")
+        return (pointer.fetchall())
+
+
+
     def returnsFirstNameFromKeyID(KeyID):
         con = sqlite3.connect ("Database.db")
         con.execute("PRAGMA foreign_keys = ON")
@@ -473,18 +524,20 @@ class returnFromDataBase:
         #print("First Step")
         #print(studentID[0])
         #Using that studentID, returns the contactID from the student table
-        contactID = returnFromDataBase.returnsContactIDFromStudentTableFromStudentTable(studentID[0])
 
+        try: 
+            contactID = returnFromDataBase.returnsContactIDFromStudentTableFromStudentTable(studentID[0])
+            #print("Second Step")
+            #print(contactID[0])
+            #Returns the firstName from contactID
+            firstName = returnFromDataBase.returnsFirstNameFromKeyID(contactID[0])
+
+
+            return(firstName[0])
         
-        #print("Second Step")
-        #print(contactID[0])
-
-        #Returns the firstName from contactID
-
-        firstName = returnFromDataBase.returnsFirstNameFromKeyID(contactID[0])
-
-
-        return(firstName[0])
+        except:
+            pass
+            #print(seati, seatj,"error")
     
     def checkSeatHealth(seati, seatj, course):
         con = sqlite3.connect ("Database.db")

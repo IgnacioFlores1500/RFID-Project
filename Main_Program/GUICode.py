@@ -27,10 +27,12 @@ from typing import Counter
 import time
 
 
+
 ##Imports a function from database file to return if a personID has edit_prilvages
 from dataBaseCode import returnFromDataBase
 ## imports the people class from Class.py to import data
 from Class import people
+from Class import courses
 ##Imprts a functions that allows to import users into database
 from dataBaseCode import inputDataBase
 ##Imports readFunctions that allows to use read the database using functions
@@ -312,9 +314,9 @@ class RFIDDisplay:
         self.editPersonButton.grid(row=9, column=0,sticky=tk.W, pady=5)
         self.editPersonButton.bind("<Button>", self.editStudentsEntrySection)
 
-        self.editClassroomButton = tk.Button(self.window,width=20, text = "Edit Classroom")
+        self.editClassroomButton = tk.Button(self.window,width=20, text = "Add Classroom")
         self.editClassroomButton.grid(row=9, column=1,sticky=tk.W, pady=5)
-        self.editClassroomButton.bind("<Button>", self.createClassEntry)
+        self.editClassroomButton.bind("<Button>", self.addClassEntry)
 
         self.deletePersonButton = tk.Button(self.window,width=20, text = "Delete person")
         self.deletePersonButton.grid(row=9, column=2,sticky=tk.W, pady=5)
@@ -324,6 +326,41 @@ class RFIDDisplay:
         except:
             pass
 
+
+    def addClassEntry(self,event):
+        self.destroyAllPossibleAdminFields_Buttons()
+        dataBasePeople = []
+        dataBasePeople = returnFromDataBase.returnStudentTable()
+        studentSelected = []
+        studentNamesOptions = []
+        #StudentID, contactID, covidStatus
+
+        for i in dataBasePeople:
+            studentNamesOptions.append(i[1])
+
+        for j in studentNamesOptions:
+            temp_tuple = returnFromDataBase.returnsFirstNameFromKeyID(j)
+            print(temp_tuple)
+            studentSelected.append(temp_tuple[0])
+            
+        
+
+        studentVar = tk.StringVar()
+        self.studentPick = ttk.Combobox(self.window, width = 50, textvariable=studentVar, values=studentSelected)
+        self.studentPick.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.studentPick.bind("<Return>", self.updateCovidStatus)
+        self.createHomeButton()
+
+        Options = ["NoCovid", "Covid"]
+        self.covidStatus = ttk.Combobox(self.window, width = 50, textvariable=studentVar, values=Options)
+        self.covidStatus.grid(row=9, column=0, sticky=tk.W, pady=5)
+        self.covidStatus.bind("<Return>", self.updateCovidStatus)
+        self.createHomeButton()
+
+    def updateCovidStatus(self,event):
+        studentName =  self.studentPick.get()
+        studentStatus = self.covidStatus.get()
+
     ##Creats the Entry for the classroom after the button is clicked
     def createClassEntry(self, event):
 
@@ -332,7 +369,12 @@ class RFIDDisplay:
         self.classroom = ttk.Entry(self.window, width=50)
         self.classroom.grid(row=7, column=0, sticky=tk.W, pady=5)
         self.classroom.insert(tk.END, "Enter the class size you want (Perfect Square)")
-        self.classroom.bind("<Return>", self.create_class)  
+        self.classroom.bind("<Return>", self.create_class)
+
+        self.classroomName = ttk.Entry(self.window, width=50)
+        self.classroomName.grid(row=8, column=0, sticky=tk.W, pady=5)
+        self.classroomName.insert(tk.END, "Course Name")
+        self.classroomName.bind("<Return>", self.create_class)   
 
         self.createHomeButton()  
     
@@ -347,12 +389,13 @@ class RFIDDisplay:
         course = self.classroom.get()
         ###I assume to type_cast classSize from string to integer
         course = int(course)
+        courseName = self.classroomName.get()
 
         if recentClassSize != 0:
             for i in range(recentClassSize):
-                for j in range(5, recentClassSize + 5):
+                for j in range(1, recentClassSize ):
                     try:
-                        seats[(i, j + 5)].destroy()
+                        seats[(i, j + 3)].destroy()
                     except:
                         pass
 
@@ -363,11 +406,25 @@ class RFIDDisplay:
                 #self.b.grid(row=i, column=j, pady=5)
         #print(course)
         for i in range(course):
-            for j in range(5, course + 5):
-                #b = ttk.Label(self.window, text=returnFromDataBase.checkSeat(i, j, course) + returnFromDataBase.checkSeatHealth(i, j, course))
-                b = ttk.Label(self.window, text="[Seat]")
-                b.grid(row=i, column=j, pady=200 / course, padx=200 / course)
-                seats[(i, j + 5)] = b
+            for j in range(1, course):
+                if (returnFromDataBase.checkSeat(i,j,courseName) != None):
+                    name =returnFromDataBase.checkSeat(i, j, courseName)
+                    print(name)
+                    print("debug")
+                    health = returnFromDataBase.checkSeatHealth(i, j, courseName)
+                    if (health == "NoCovid"):
+                        b = ttk.Label(self.window, text=name, background="light green")
+                        b.grid(row=i+3, column=j+3, pady=200 / course, padx=200 / course)
+                        seats[(i, j + 3)] = b
+                    else:
+                        b = ttk.Label(self.window, text=name, background="red")
+                        b.grid(row=i+3, column=j+3, pady=200 / course, padx=200 / course)
+                        seats[(i, j + 3)] = b
+                    #b = ttk.Label(self.window, text=returnFromDataBase.checkSeat(i, j, course) + returnFromDataBase.checkSeatHealth(i, j, course))
+                else:
+                    b = ttk.Label(self.window, text="[Empty Seat]")
+                    b.grid(row=i+3, column=j+3, pady=200 / course, padx=200 / course)
+                    seats[(i, j + 3)] = b
                 
         
         recentClassSize = course
@@ -391,6 +448,8 @@ class RFIDDisplay:
         email = self.emailEntry.get()
         phone = self.phoneEntry.get()
         housing = self.HousingStatusEntry.get()
+
+        userStatus = self.isProfessor.get()
 
         ##checks input for any errors
         ##Might need create a function to check for bad data
@@ -422,6 +481,17 @@ class RFIDDisplay:
              ## print("INPUTED GUI DEBUG") // DEBUG PRINT STAMTENT
              ##Prints in console if the entry did get inputted correctly
              readFromDataBase.readPeopleTable()
+             if (userStatus == "Professor"):
+                tempTuple = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(RFID)
+                KeyID = tempTuple[0]
+                inputDataBase.inputProfessor(KeyID)
+             else:
+                tempTuple = returnFromDataBase.returnsKeyIDPeopleTableFromRFIDTag(RFID)
+                KeyID = tempTuple[0]
+                inputDataBase.inputStudent(KeyID)
+
+
+
 
         ## After the submition to the people table
         ## The boxes should clear the info from the entry wiget
@@ -453,7 +523,7 @@ class RFIDDisplay:
     def deleteStudentEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
         dataBasePeople = []
-        dataBasePeople = readFromDataBase.readPeopleTable()
+        dataBasePeople = returnFromDataBase.returnPeopleTable()
         peopleOptions = []
         
         peopleOptionsCt = 0
@@ -525,7 +595,7 @@ class RFIDDisplay:
     def editStudentsEntrySection(self,event):
         self.destroyAllPossibleAdminFields_Buttons()
         dataBasePeople = []
-        dataBasePeople = readFromDataBase.readPeopleTable()
+        dataBasePeople = returnFromDataBase.returnPeopleTable()
         peopleOptions = []
         
 
@@ -585,29 +655,23 @@ class RFIDDisplay:
         self.phoneEntry.insert(tk.END, studentData[7])
         self.phoneEntry.bind("<Return>", self.editToDataBase)
 
-        var2 = tk.StringVar()
-        Options = ["COVID", "No COVID"]
-        self.hasCovid = ttk.Combobox(self.window, width = 50, textvariable=var2, values=Options)
-        self.hasCovid.grid(row=15, column=0, sticky=tk.W, pady=5)
-        self.hasCovid.bind("<Return>", self.setUserPriveleges) 
-
         self.HousingStatusEntry = ttk.Entry(self.window, width=50)
-        self.HousingStatusEntry.grid(row=16, column=0, sticky=tk.W, pady=5)
+        self.HousingStatusEntry.grid(row=15, column=0, sticky=tk.W, pady=5)
         self.HousingStatusEntry.insert(tk.END,  studentData[8])
         self.HousingStatusEntry.bind("<Return>", self.editToDataBase)
 
         var = tk.StringVar()
         Options = ["Professor", "User"]
         self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
-        self.isProfessor.grid(row=17, column=0, sticky=tk.W, pady=5)
+        self.isProfessor.grid(row=16, column=0, sticky=tk.W, pady=5)
         self.isProfessor.bind("<Return>", self.setUserPriveleges) 
 
         self.insert_Record_Button = tk.Button(self.window, text="Update Users")
-        self.insert_Record_Button.grid(row=18, column=0, sticky=tk.W, pady=5)
+        self.insert_Record_Button.grid(row=17, column=0, sticky=tk.W, pady=5)
         self.insert_Record_Button.bind("<Button>", self.editToDataBase)
  
         self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
-        self.homeButton.grid(row=19,column=0,rowspan=2,sticky=tk.W)
+        self.homeButton.grid(row=18,column=0,rowspan=2,sticky=tk.W)
         self.homeButton.bind("<Button>", self.goHome)
     
     def setProfessor():
@@ -622,43 +686,90 @@ class RFIDDisplay:
         self.insertCourseName = tk.Entry(self.window, width=50)
         self.insertCourseName.grid(row=8, column=0, sticky=tk.W, pady=5)
         self.insertCourseName.insert(tk.END, "insert Course Name")
-        self.insertCourseName.bind("<Return>", self.addToDatabase)
+        self.insertCourseName.bind("<Return>", self.addCourseToDataBase)
 
         self.insertBuildingName = tk.Entry(self.window, width=50)
         self.insertBuildingName.grid(row=9, column=0, sticky=tk.W, pady=5)
         self.insertBuildingName.insert(tk.END, "insert Building Name")
-        self.insertBuildingName.bind("<Return>", self.addToDatabase)
+        self.insertBuildingName.bind("<Return>", self.addCourseToDataBase)
 
         self.insertRoomName = tk.Entry(self.window, width=50)
         self.insertRoomName.grid(row=10, column=0, sticky=tk.W, pady=5)
         self.insertRoomName.insert(tk.END, "insert RoomName")
-        self.insertRoomName.bind("<Return>", self.addToDatabase)
+        self.insertRoomName.bind("<Return>", self.addCourseToDataBase)
 
         self.insertRoomClassSize = tk.Entry(self.window, width=50)
         self.insertRoomClassSize.grid(row=11, column=0, sticky=tk.W, pady=5)
         self.insertRoomClassSize.insert(tk.END, "insert Room Class Size")
-        self.insertRoomClassSize.bind("<Return>", self.addToDatabase)
+        self.insertRoomClassSize.bind("<Return>", self.addCourseToDataBase)
 
         self.insertStartDate = tk.Entry(self.window, width=50)
         self.insertStartDate.grid(row=12, column=0, sticky=tk.W, pady=5)
         self.insertStartDate.insert(tk.END, "insert Start Date")
-        self.insertStartDate.bind("<Return>", self.addToDatabase)
+        self.insertStartDate.bind("<Return>", self.addCourseToDataBase)
 
         self.insertEndDate = tk.Entry(self.window, width=50)
         self.insertEndDate.grid(row=13, column=0, sticky=tk.W, pady=5)
         self.insertEndDate.insert(tk.END, "insert End Date")
-        self.insertEndDate.bind("<Return>", self.addToDatabase)
+        self.insertEndDate.bind("<Return>", self.addCourseToDataBase)
 
         self.insertTime = tk.Entry(self.window, width=50)
         self.insertTime.grid(row=14, column=0, sticky=tk.W, pady=5)
         self.insertTime.insert(tk.END, "insert Time")
-        self.insertTime.bind("<Return>", self.addToDatabase)
-        
+        self.insertTime.bind("<Return>", self.addCourseToDataBase)
+
+        var = tk.StringVar()
+        dataBasePeople = []
+        dataBasePeople = returnFromDataBase.returnProfTable()
+        professorContactOptions = []
+        professorNamesOptions = []
+
+        for i in dataBasePeople:
+            professorContactOptions.append(i[1])
+
+        for j in professorContactOptions:
+            temp_tuple = returnFromDataBase.returnsFirstNameFromKeyID(j)
+            print(temp_tuple)
+            professorNamesOptions.append(temp_tuple[0])
+
+
+        self.whichProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=professorNamesOptions)
+        self.whichProfessor.grid(row=15, column=0, sticky=tk.W, pady=5)
+        self.whichProfessor.bind("<Return>", self.addCourseToDataBase) 
         
 
         self.homeButton = tk.Button(self.window, text="Home",width=12,height=5)
-        self.homeButton.grid(row=15,column=0,sticky=tk.W)
+        self.homeButton.grid(row=16,column=0,sticky=tk.W)
         self.homeButton.bind("<Button>", self.goHome)
+
+
+    def addCourseToDataBase(self,event):
+        courseName = self.insertCourseName.get()
+        BuildingName = self.insertBuildingName.get()
+        RoomName = self.insertRoomName.get()
+        RoomClassSize = self.insertRoomClassSize.get()
+        StartDate = self.insertStartDate.get()
+        EndDate = self.insertEndDate.get()
+        Time = self.insertTime.get()
+
+        ##this retuns a name
+        profName = self.whichProfessor.get()
+
+        allProfPeopleInfo = returnFromDataBase.returnsInfomationFromPeopleTableFromFirstName(profName)
+        profKeyID = allProfPeopleInfo[0]
+        tupleprofID = returnFromDataBase.returnsProfIDFromKeyID(profKeyID)
+        profID = tupleprofID[0]
+
+        temp_course = courses(courseName,BuildingName,RoomName,RoomClassSize,StartDate,EndDate,Time)
+
+
+
+        inputDataBase.inputCourse(temp_course,profID)
+        self.destroyAllPossibleAdminFields_Buttons()
+        self.show_admin_powers()
+       
+
+
 
     ## function that create the entry fields for showAdminPowers()
     def createStudentsEntrySection(self,event):
@@ -727,7 +838,7 @@ class RFIDDisplay:
         Options = ["Professor", "User"]
         self.isProfessor = ttk.Combobox(self.window, width = 50, textvariable=var, values=Options)
         self.isProfessor.grid(row=16, column=0, sticky=tk.W, pady=5)
-        self.isProfessor.bind("<Return>", self.setUserPriveleges)  
+        self.isProfessor.bind("<Return>", self.addToDatabase)  
         
         ##Update button, I just wanted a GUI way approach to adding People to the Database
         ## WIP: SHIT DOESN"TT WORK DOES NOT WORK - IGGY
@@ -768,6 +879,10 @@ class RFIDDisplay:
             pass
         try:
             self.classroom.destroy()
+        except:
+            pass
+        try:
+            self.classroomName.destroy()
         except:
             pass
         try:
@@ -863,15 +978,19 @@ class RFIDDisplay:
         except:
             pass
         try:
-            self.hasCovid.destroy()
+            self.whichProfessor.destroy()
+        except:
+            pass
+        try:
+            self.studentPick.destroy()
         except:
             pass
         try:
             if recentClassSize != 0:
                 for i in range(recentClassSize):
-                    for j in range(5, recentClassSize + 5):
+                    for j in range(1, recentClassSize):
                         try:
-                            seats[(i, j + 5)].destroy()
+                            seats[(i, j + 3)].destroy()
                         except:
                             pass
         except:
